@@ -1,4 +1,4 @@
-# cvmsi
+# CVM-SI(cvmsi)
 
 Tomography improved Southern California Velocity Model developed
 by SCEC, Caltech and USGS with geotechnical layer
