@@ -9,10 +9,10 @@ import getopt
 import sys
 import subprocess
 
-model = "CVMSI"
+model = "CVM-SI"
 
 def usage():
-    print("\n./make_data_files.py -d [CVM-SI] -u [uid]\n\n")
+    print("\n./make_data_files.py -d [cvmsi] -u [uid]\n\n")
     print("-d - dataset to retrieve from hypocenter.\n")
     print("-u - username to use to do the dataset retrieval.\n")
     sys.exit(0)
@@ -45,8 +45,8 @@ def main():
 
     print("\nDownloading model dataset\n")
 
-    subprocess.check_call(["scp", username +
-                           "hypocenter.usc.edu:" + path + "/" + dataset +"/*",
+    subprocess.check_call(["scp", "-r", username +
+                           "hypocenter.usc.edu:" + path + "/"+ dataset + "/*",
                            "."])
 
     print("\nDone!")
