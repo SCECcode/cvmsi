@@ -9,3 +9,6 @@ install:
 	mkdir -p ${prefix}/model/i26
 	cp -R ./cvms ${prefix}/model
 	cp ./i26/* ${prefix}/model/i26
+	chmod +x ${prefix}/model/cvms
+	chmod +x ${prefix}/model/i26
+
