@@ -1,0 +1,76 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "SCEC SCEC"
+  given-names: ""
+keywords: UCVM, research
+license: BSD-3-Clause
+repository-code: "https://github.com/SCECcode/cvmsi.git"
+title: "Tomography improved Southern California Velocity Model with geotechnical layer"
+version: 3
+type: software
+date-released: 2022-03-31
+repository-code: "https://github.com/SCECcode/cvmsi.git"
+contact:
+  - email: software@scec.org
+    name: "The SCEC Software project cvmsi"
+references:
+  - authors:
+      - family-names: "Lee"
+        given-names: "E."
+      - family-names: "Chen"
+        given-names: "H."
+      - family-names: "Jordan"
+        given-names: "T."
+      - family-names: "Wang"
+        given-names: "L."
+    keywords: Tomography  
+    scope: "Cite this paper if you want to reference the model"
+    title: "Rapid full-wave centroid moment tensor (CMT) inversion in a three-dimensional earth structure model for earthquakes in Southern California"
+    journal: "Geophysical Journal International"
+    type: article
+    year: 2011
+    volume: 186
+    start: 311
+    end: 330
+    doi: "10.1111/j.1365-246X.2011.05031.x"
+  - authors:
+      - family-names: "Chen"
+        given-names: "P."
+      - family-names: "Lee"
+        given-names: "E."
+      - family-names: "Jordan"
+        given-names: "T."
+      - family-names: "Maechling"
+        given-names: "T.H."
+      - family-names: "Denolle"
+        given-names: "M."
+      - family-names: "Beroza"
+        given-names: "G.C."
+    keywords: Tomography 
+    scope: "Cite this paper if you want to reference the model"
+    title: "Full3D Waveform Tomography for Southern California"
+    conferece: "SSA Annual Meeting"
+    type: abstract
+    city: "Memphis"
+    year: 2011
+ - authors:
+      - family-names: "Lee"
+        given-names: "E."
+      - family-names: "Chen"
+        given-names: "P."
+      - family-names: "Jordan"
+        given-names: "T."
+      - family-names: "Maechling"
+        given-names: "T.H."
+      - family-names: "Denolle"
+        given-names: "M."
+      - family-names: "Beroza"
+        given-names: "G.C."
+    keywords: Tomography
+    scope: "Cite this paper if you want to reference the model" 
+    title: "Full-3D Waveform Tomography for Southern California"
+    conference: "AGU Fall Meeting"
+    type: abstract
+    city: "San Francisco"
+    year: 2010

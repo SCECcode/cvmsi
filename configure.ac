@@ -1,9 +1,9 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(CVM-S Improved, 4.26, davidgil@usc.edu)
-AC_CONFIG_SRCDIR([src/cvmsi.h])
-AM_INIT_AUTOMAKE()
+AC_INIT(CVM-S Improved, 4.26)
+AC_CONFIG_SRCDIR([src])
+AM_INIT_AUTOMAKE([foreign no-exeext])
 AC_PROG_RANLIB
 
 # Checks for programs.
