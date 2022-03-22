@@ -1,8 +1,29 @@
 #ifndef CVMSI_H
 #define CVMSI_H
 
+/**
+ * @file cvmsi.h
+ * @brief Main header file for CVMSI library.
+ * @author - SCEC
+ * @version
+ *
+ *
+**/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
 /* Constants */
 #define CVMSI_MAX_STR_LEN 256
+
+/* Max array size for Z dimension */
+#define CVMSI_MAX_ZGRID 3000
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 /* Point structure */
 typedef struct cvmsi_point_t {

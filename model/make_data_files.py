@@ -21,6 +21,7 @@ def usage():
     sys.exit(0)
 
 def download_urlfile(url,fname):
+  print(" >>> grabbing (%s) %s\n",fname,url);
   try:
     response = urlopen(url)
     CHUNK = 16 * 1024
@@ -61,10 +62,10 @@ def main():
         variable=parts[0].strip()
         val=parts[1].strip()
 
-        if (variable == 'model_data_path') :
+        if (variable == 'model_download_data_path') :
             path = val + '/' + model
             continue
-        if (variable == 'model_dir') :
+        if (variable == 'model_download_dir') :
             mdir = val
             continue
         continue

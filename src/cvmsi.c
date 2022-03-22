@@ -1,20 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+/*
+ * @file cvmsi.c
+ * @brief Main file for CVMSI library.
+ * @author - SCEC
+ * @version
+ *
+ * @section DESCRIPTION
+ *
+ *
+ */
+
+
 #include "cvmsi.h"
+
 #include "cvmsi_utils.h"
 #include "cvmsi_geo2xy.h"
 #include "vs30_gtl.h"
 
 #include "../model/cvms/cvms.h"
 
-/* Max array size for Z dimension */
-#define CVMSI_MAX_ZGRID 3000
+/* Init flag */
+int cvmsi_is_initialized = 0;
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif 
+/* Buffers initialized flag */
+int cvmsi_buf_init = 0;
+
+/* Model conf */
+cvmsi_configuration_t *cvmsi_configuration;
 
 #define ADD_GTL 0
 #define ADD_ALT_GTL 0
@@ -25,15 +36,51 @@
 int cvmsi_init_flag = 0;
 int cvmsi_izone;
 int cvmsi_dim[3], cvmsi_pdim[3];
+
 cvmsi_prop_read_t *cvmsi_buf = NULL;
 double cvmsi_box[8];
 double cvmsi_zgrid[CVMSI_MAX_ZGRID];
 
-/* Version ID */
-char cvmsi_version_id[CVMSI_MAX_STR_LEN];
+/*
+ * Initializes the CVM-SI plugin model within the UCVM framework. In order to initialize
+ * the model, we must provide the UCVM install path and optionally a place in memory
+ * where the model already exists.
+ *
+ * @param dir The directory in which UCVM has been installed.
+ * @param label A unique identifier for the velocity model.
+ * @return Success or failure, if initialization was successful.
+ */
+int cvmsi_init(const char *dir, const char *label) {
 
-/* forward declaration */
-void utm_geo_(double*, double*, double*, double*, int*, int*);
+  char configbuf[512];
+  int errcode;
+
+  if (cvmsi_is_initialized) {
+    cvmsi_print_error("Model is already initialized\n");
+    return(UCVM_CODE_ERROR);
+  }
+
+  // Initialize variables.
+  cvmsi_configuration = calloc(1, sizeof(cvmsi_configuration_t));
+
+  // Configuration file location when built with UCVM
+/*
+
+                 srcdir/model/cvmsi/data/config
+                                         cvms
+                                         i26
+*/
+  sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+
+  // Read the cvmsi_configuration file.
+  if (cvmsi_read_configuration(configbuf, cvmsi_configuration) != UCVM_CODE_SUCCESS) {
+    cvmsi_print_error("Model configuration can not be accessed.");
+    return(UCVM_CODE_ERROR);
+  }
+
+  
+XXXX 
+
 
 /* Initialize */
 int cvmsi_init(const char *dir)
@@ -61,6 +108,7 @@ int cvmsi_init(const char *dir)
   sprintf(boxfile, "%s/box.dat", modelpath);
   sprintf(modelfile, "%s/cvmsi.bin", modelpath);
   sprintf(verfile, "%s/cvmsi.ver", modelpath);
+
   for (i = 0; i < 3; i++) {
     cvmsi_dim[i] = 0;
     cvmsi_pdim[i] = 0;
@@ -205,19 +253,44 @@ int cvmsi_init(const char *dir)
    return(0);
 }
 
-
-/* Finalize */
+/*
+ * Called when the model is being discarded. Free all variables.
+ *
+ * @return UCVM_CODE_SUCCESS
+ */
 int cvmsi_finalize()
 {
   if (cvmsi_buf != NULL) {
     free(cvmsi_buf);
   }
 
-  cvmsi_init_flag = 0;
-  return(0);
+  cvmsi_is_initialized = 0;
+  return UCVM_CODE_SUCCESS;
 }
 
+/*
+ * Returns the version information.
+ *
+ * @param ver Version string to return.
+ * @param len Maximum length of buffer.
+ * @return Zero
+ */
+int cvmsi_version(char *ver, int len)
+{
+  int errcode;
+  char verstr[CVMS_FORTRAN_VERSION_LEN];
 
+  cvmsi_version_(verstr, &errcode, CVMS_FORTRAN_MODELDIR_LEN);
+  if (errcode != 0) {
+    cvmsi_print_error("Failed to retrieve version from CVM-S");
+    return UCVM_CODE_ERROR;
+  }
+
+  strncpy(ver, verstr, len);
+  return UCVM_CODE_SUCCESS;
+}
+
+XXX
 /* Version ID */
 int cvmsi_version(char *ver, int len)
 {
