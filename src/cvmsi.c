@@ -9,7 +9,6 @@
  *
  */
 
-
 #include "cvmsi.h"
 
 #include "cvmsi_utils.h"
@@ -33,13 +32,16 @@ cvmsi_configuration_t *cvmsi_configuration;
 #define ADD_TJ_GTL 1
 
 /* Model config */
-int cvmsi_init_flag = 0;
 int cvmsi_izone;
 int cvmsi_dim[3], cvmsi_pdim[3];
 
 cvmsi_prop_read_t *cvmsi_buf = NULL;
+
 double cvmsi_box[8];
 double cvmsi_zgrid[CVMSI_MAX_ZGRID];
+
+/* Version ID */
+char cvmsi_version_id[CVMSI_MAX_STR_LEN];
 
 /*
  * Initializes the CVM-SI plugin model within the UCVM framework. In order to initialize

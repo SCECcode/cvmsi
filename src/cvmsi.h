@@ -60,17 +60,75 @@ typedef struct cvmsi_data_t {
 } cvmsi_data_t;
 
 
-/* Initialize */
-int cvmsi_init(const char *dir);
+// Structures
+/** Defines a point (latitude, longitude, and depth) in WGS84 format */
+typedef struct cvmsi_point_t {
+        /** Longitude member of the point */
+        double longitude;
+        /** Latitude member of the point */
+        double latitude;
+        /** Depth member of the point */
+        double depth;
+} cvmsi_point_t;
 
+/** Defines the material properties this model will retrieve. */
+typedef struct cvmsi_properties_t {
+        /** P-wave velocity in meters per second */
+        double vp;
+        /** S-wave velocity in meters per second */
+        double vs;
+        /** Density in g/m^3 */
+        double rho;
+        /** NOT USED from basic_property_t */
+        double qp;
+        /** NOT USED from basic_property_t */
+        double qs;
+} cvmsi_properties_t;
+
+/** The CVM-SI configuration structure. */
+typedef struct cvmsi_configuration_t {
+        /** The zone of UTM projection */
+        int utm_zone;
+        /** The model directory */
+        char model_dir[1000];
+XXX 
+} cvmsi_configuration_t;
+
+#ifdef DYNAMIC_LIBRARY
+
+/** Initializes the model */
+int model_init(const char *dir, const char *label);
+/** Cleans up the model (frees memory, etc.) */
+int model_finalize();
+/** Returns version information */
+int model_version(char *ver, int len);
+/** Queries the model */
+int model_query(cvmsi_point_t *points, cvmsi_properties_t *data, int numpts);
+/** Setparam */
+int model_setparam(int, int, int);
+
+#endif
+
+
+// CVMSI Related Functions
+
+/* Initialize */
+int cvmsi_init(const char *dir, const char *label);
 /* Finalize */
 int cvmsi_finalize();
-
 /* Version ID */
 int cvmsi_version(char *ver, int len);
-
 /* Query */
 int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts);
+** Setparam*/
+int cvmsi_setparam(int, int, ...);
 
+// Non-UCVM Helper Functions
+/** Reads the configuration file. */
+int cvmsi_read_configuration(char *file, cvmsi_configuration_t *config);
+void cvmsi_print_error(char *err);
+
+* forward declaration */
+void utm_geo_(double*, double*, double*, double*, int*, int*);
 
 #endif
