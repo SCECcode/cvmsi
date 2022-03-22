@@ -15,8 +15,12 @@
 #include <string.h>
 #include <math.h>
 
+#include "ucvm_model_dtypes.h"
+
 /* Constants */
 #define CVMSI_MAX_STR_LEN 256
+#define CVMSI_MAX_PATH_LEN 1280
+#define CVMSI_FORTRAN_MODELDIR_LEN 128
 
 /* Max array size for Z dimension */
 #define CVMSI_MAX_ZGRID 3000
@@ -91,7 +95,8 @@ typedef struct cvmsi_configuration_t {
         int utm_zone;
         /** The model directory */
         char model_dir[1000];
-XXX 
+        /**  The cvms directory */
+        char cvms_dir[1000];
 } cvmsi_configuration_t;
 
 #ifdef DYNAMIC_LIBRARY
