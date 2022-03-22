@@ -1,3 +1,7 @@
+CVM-S4.26 (April 2021)
+
+        Add forward function declaration for utm_geo_() and new LICENSE
+
 CVM-S4.26 (March 2014):
 
 	26th iteration of Po Chen and En-Jui Lee's improvment on CVM-S4 using full
@@ -12,3 +16,4 @@ CVM-S4.23 (November 2013):
 	version included the perturbations interpolated on top of the starting
 	model that the authors used. The starting model had velocities increased 
 	to 1000m/s.
+

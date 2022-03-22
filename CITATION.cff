@@ -52,7 +52,7 @@ references:
     title: "Full3D Waveform Tomography for Southern California"
     conferece: "SSA Annual Meeting"
     type: abstract
-    city: "Memphis"
+    city: "Memphis, Tennessee"
     year: 2011
  - authors:
       - family-names: "Lee"
@@ -72,5 +72,5 @@ references:
     title: "Full-3D Waveform Tomography for Southern California"
     conference: "AGU Fall Meeting"
     type: abstract
-    city: "San Francisco"
+    city: "San Francisco, California"
     year: 2010
