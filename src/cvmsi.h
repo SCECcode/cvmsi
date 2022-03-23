@@ -29,42 +29,45 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+// structure started with _ are from original cvmsi codebase
+//  
+
 /* Point structure */
-typedef struct cvmsi_point_t {
+typedef struct _cvmsi_point_t {
   double coord[3];
-} cvmsi_point_t;
+} _cvmsi_point_t;
 
 
 /* Index structure */
-typedef struct cvmsi_index_t {
+typedef struct _cvmsi_index_t {
   int coord[3];
-} cvmsi_index_t;
+} _cvmsi_index_t;
 
 
 /* Full property structure */
-typedef struct cvmsi_prop_t {
+typedef struct _cvmsi_prop_t {
   float vp;
   float vs;
   float rho;
   float diff_vp;
   float diff_vs;
   float diff_rho;
-} cvmsi_prop_t;
+} _cvmsi_prop_t;
 
 /* Property structure for read-in */
-typedef struct cvmsi_prop_read_t {
+typedef struct _cvmsi_prop_read_t {
 	float vp;
 	float vs;
-} cvmsi_prop_read_t;
+} _cvmsi_prop_read_t;
 
 /* Return data structure */
-typedef struct cvmsi_data_t {
-  cvmsi_index_t xyz;
-  cvmsi_prop_t prop;
-} cvmsi_data_t;
+typedef struct _cvmsi_data_t {
+  _cvmsi_index_t xyz;
+  _cvmsi_prop_t prop;
+} _cvmsi_data_t;
 
 
-// Structures
+// Structures -- 
 /** Defines a point (latitude, longitude, and depth) in WGS84 format */
 typedef struct cvmsi_point_t {
         /** Longitude member of the point */
@@ -124,7 +127,7 @@ int cvmsi_finalize();
 /* Version ID */
 int cvmsi_version(char *ver, int len);
 /* Query */
-int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts);
+int cvmsi_query(cvmsi_point_t *pnt, cvmsi_properties_t *data, int numpts);
 ** Setparam*/
 int cvmsi_setparam(int, int, ...);
 
@@ -135,5 +138,7 @@ void cvmsi_print_error(char *err);
 
 * forward declaration */
 void utm_geo_(double*, double*, double*, double*, int*, int*);
+int _cvms_query(_cvmsi_point_t *pnt, _cvmsi_data_t *data, int numpts);
+
 
 #endif

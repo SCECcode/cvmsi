@@ -32,7 +32,10 @@ cvmsi_configuration_t *cvmsi_configuration;
 int cvmsi_izone;
 int cvmsi_dim[3], cvmsi_pdim[3];
 
-cvmsi_prop_read_t *cvmsi_buf = NULL;
+/* Query buffers */
+_cvmsi_point_t *cvmsi_pnts_buffer = NULL;
+_cvmsi_data_t *cvmsi_data_buffer = NULL;
+_cvmsi_prop_read_t *cvmsi_buf = NULL;
 
 double cvmsi_box[8];
 double cvmsi_zgrid[CVMSI_MAX_ZGRID];
@@ -82,6 +85,9 @@ int cvmsi_init(const char *dir, const char *label) {
                                 /cvms
                                 /i26                     */
   sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+
+  cvmsi_pnts_buffer = malloc(CVMSI_MAX_POINTS*sizeof(_cvmsi_point_t));
+  cvmsi_data_buffer = malloc(CVMSI_MAX_POINTS*sizeof(_cvmsi_data_t));
 
   // Read the cvmsi_configuration file.
   if (cvmsi_read_configuration(configbuf, cvmsi_configuration) != UCVM_CODE_SUCCESS) {
@@ -184,7 +190,7 @@ int cvmsi_init(const char *dir, const char *label) {
 
   /* Read in the model file */
   num_points = cvmsi_dim[0]*cvmsi_dim[1]*cvmsi_dim[2];
-  cvmsi_buf = malloc(num_points * sizeof(cvmsi_prop_read_t));
+  cvmsi_buf = malloc(num_points * sizeof(_cvmsi_prop_read_t));
   if (cvmsi_buf == NULL) {
     fprintf(stderr, "Failed to allocate model buffer\n");
     return(UCVM_CODE_ERROR);
@@ -194,7 +200,7 @@ int cvmsi_init(const char *dir, const char *label) {
     fprintf(stderr, "Failed to open model file %s\n", cvmsi_modelfile);
     return(UCVM_CODE_ERROR);
   }
-  if (fread(cvmsi_buf, sizeof(cvmsi_prop_read_t), num_points, ip) != num_points) {
+  if (fread(cvmsi_buf, sizeof(_cvmsi_prop_read_t), num_points, ip) != num_points) {
     fprintf(stderr, "Failed to read in model file %s\n", cvmsi_modelfile);
     return(UCVM_CODE_ERROR);
   }
@@ -306,6 +312,15 @@ int cvmsi_finalize()
     cvmsi_buf=NULL;
   }
 
+  if (cvmsi_pnts_buffer != NULL) {
+    free(cvmsi_pnts_buffer);
+    cvmsi_pnts_buffer = NULL;
+  }
+  if (cvmsi_data_buffer != NULL) {
+    free(cvmsi_data_buffer);
+    cvmsi_data_buffer = NULL;
+  }
+ 
   cvmsi_is_initialized = 0;
   return UCVM_CODE_SUCCESS;
 }
@@ -361,14 +376,81 @@ int cvmsi_setparam(int id, int param, ...)
   return UCVM_CODE_SUCCESS;
 }
 
+/**
+ * Queries CVM-SI at the given points and returns the data that it finds.
+ *
+ * @param points The points at which the queries will be made.
+ * @param data The data that will be returned (Vp, Vs, density, Qs, and/or Qp).
+ * @param numpoints The total number of points to query.
+ * @return UCVM_CODE_SUCCESS or UCVM_CODE_ERROR.
+ */
+int cvmsi_query(cvmsi_point_t *pnt, cvmsi_properties_t *data, int numpoints) {
+  int i, j, j2;
+  double depth;
 
-/* Query */
-int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts) {
+ if (!cvmsi_is_initialized) { return(UCVM_CODE_ERROR); }
+
+  /** Stores the mapping between data array and query buffer array */
+  int* index_mapping = malloc(sizeof(int)*CVMSI_MAX_POINTS);
+  if (index_mapping==NULL) {
+    fprintf(stderr, "Memory allocation of index_mapping failed, aborting.\n");
+    exit(1);
+  }
+
+  int nn = 0;
+  for (i = 0; i < n; i++) {
+// initialize the data
+      data[i].vp=-1;
+      data[i].vs=-1;
+      data[i].rho=-1;
+      data[i].qp=-1;
+      data[i].qs=-1;
+
+      depth = data[i].depth; //??? 
+        
+      /* CVM-SI extends from free surface on down */
+      if (depth >= 0.0) {
+        index_mapping[nn]=i;  
+        cvmsi_pnts_buffer[nn].coord[0] = pnt[i].longitude;
+        cvmsi_pnts_buffer[nn].coord[1] = pnt[i].latitude;
+        cvmsi_pnts_buffer[nn].coord[2] = depth;
+        nn++;
+      
+        if (nn == CVMSI_MAX_POINTS) {
+          _cvmsi_query(cvmsi_pnts_buffer, cvmsi_data_buffer, nn);
+        
+          for (j = 0; j < nn; j++) {
+            data[index_mapping[j]].vp = cvmsi_data_buffer[j].prop.vp;
+            data[index_mapping[j]].vs = cvmsi_data_buffer[j].prop.vs;
+            data[index_mapping[j]].rho = cvmsi_data_buffer[j].prop.rho;
+          }
+            
+          nn = 0;
+      }
+    }
+  }
+    
+  if (nn > 0) {
+    _cvmsi_query(cvmsi_pnts_buffer, cvmsi_data_buffer, nn);
+        
+    for (j2 = 0; j2 < nn; j2++) {
+         data[index_mapping[j2]].vp = cvmsi_data_buffer[j2].prop.vp;
+         data[index_mapping[j2]].vs = cvmsi_data_buffer[j2].prop.vs;
+         data[index_mapping[j2]].rho = cvmsi_data_buffer[j2].prop.rho;
+    }
+  }
+  free(index_mapping);
+
+  return(UCVM_CODE_SUCCESS);
+}
+
+/* internal query to cvms and then preprocess */
+int _cvms_query(_cvmsi_point_t *pnt, _cvmsi_data_t *data, int numpts) {
   
   int errcode;
   int x, y, z, i, j, k, offset;
   int counter;
-  cvmsi_point_t xyz_f;
+  _cvmsi_point_t xyz_f;
   double p[2][3], q_vp[2][2][2], q_vs[2][2][2];
 
   /* As per Po and En-Jui. Reproduce the starting model. */
@@ -380,10 +462,6 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts) {
   const float min_cvms_vp = 283.637;
   const float min_cvms_rho = 1909.786;
 
-  int flagx = 0;
-  
-  if (!cvmsi_is_initialized) { return(UCVM_CODE_ERROR); }
-  
   // First we need to query CVM-S4 for all the points.
   float *cvms_vp = malloc(numpts * sizeof(float));
   float *cvms_vs = malloc(numpts * sizeof(float));
@@ -410,7 +488,7 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts) {
   
   // Now we need to go through the points and interpolate the CVM-S4.26 perturbations.
   for (counter = 0; counter < numpts; counter++) {
-    cvmsi_data_t *curData = malloc(sizeof(cvmsi_data_t));
+    _cvmsi_data_t *curData = malloc(sizeof(_cvmsi_data_t));
     
     curData->xyz.coord[0] = -1;
     curData->xyz.coord[1] = -1;
@@ -422,9 +500,9 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts) {
     curData->prop.diff_vs = 0;
     curData->prop.rho = 0;
         
-        double cvmsdepptr = (double)cvmsdep[counter];
-        double cvmslatptr = (double)cvmslat[counter];
-        double cvmslonptr = (double)cvmslon[counter];
+    double cvmsdepptr = (double)cvmsdep[counter];
+    double cvmslatptr = (double)cvmslat[counter];
+    double cvmslonptr = (double)cvmslon[counter];
   
     /* Convert point from geo to xy */
     cvmsi_geo2xy_(cvmsi_dim, cvmsi_box, cvmsi_zgrid, 
@@ -485,14 +563,10 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts) {
       xyz_f.coord[2] = xyz_f.coord[2] - (int)(xyz_f.coord[2]);
     
       curData->prop.diff_vp = cvmsi_interp_trilinear(xyz_f.coord[0], 
-                               xyz_f.coord[1],
-                               xyz_f.coord[2],
-                               p, q_vp);
+                                xyz_f.coord[1], xyz_f.coord[2], p, q_vp);
     
       curData->prop.diff_vs = cvmsi_interp_trilinear(xyz_f.coord[0], 
-                               xyz_f.coord[1],
-                               xyz_f.coord[2],
-                               p, q_vs);
+      xyz_f.coord[1], xyz_f.coord[2], p, q_vs);
           
       /* Make sure our returned CVM-S values are at least the minimum they found. */
       float cvms_vs_calc = cvms_vs[counter];
@@ -580,7 +654,7 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts) {
 
         /* Now add in the GTL if we want it. */
         if (ADD_GTL) {
-      gtl_entry_t *entry = malloc(sizeof(gtl_entry_t));
+            gtl_entry_t *entry = malloc(sizeof(gtl_entry_t));
             
             /* Convert lat, lon to UTM. */
             double *utm_east = malloc(sizeof(double));
@@ -611,5 +685,98 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_data_t *data, int numpts) {
         free(curData);
   }
 
-  return(UCVM_CODE_SUCCESS);
+  return(0);
 }
+
+
+
+
+/**
+ * Prints the error string provided.
+ *
+ * @param err The error string to print out to stderr.
+ */
+void cvmsi_print_error(char *err) {
+  fprintf(stderr, "An error has occurred while executing CVM-SI . The error was:\n\n");
+  fprintf(stderr, "%s", err);
+  fprintf(stderr, "\n\nPlease contact software@scec.org and describe both the error and a bit\n");
+  fprintf(stderr, "about the computer you are running CVM-SI on (Linux, Mac, etc.).\n");
+}
+
+// The following functions are for dynamic library mode. If we are compiling
+// a static library, these functions must be disabled to avoid conflicts.
+#ifdef DYNAMIC_LIBRARY
+
+/**
+ * Init function loaded and called by the UCVM library. Calls cvmsi_init.
+ *
+ * @param dir The directory in which UCVM is installed.
+ * @return Success or failure.
+ */
+int model_init(const char *dir, const char *label) {
+	return cvmsi_init(dir, label);
+}
+
+/**
+ * Query function loaded and called by the UCVM library. Calls cvmsi_query.
+ *
+ * @param points The basic_point_t array containing the points.
+ * @param data The basic_properties_t array containing the material properties returned.
+ * @param numpoints The number of points in the array.
+ * @return Success or fail.
+ */
+int model_query(cvmsi_point_t *points, cvmsi_properties_t *data, int numpoints) {
+	return cvmsi_query(points, data, numpoints);
+}
+
+/**
+ * Finalize function loaded and called by the UCVM library. Calls cvmsi_finalize.
+ *
+ * @return Success
+ */
+int model_finalize() {
+	return cvmsi_finalize();
+}
+
+/**
+ * Version function loaded and called by the UCVM library. Calls cvmsi_version.
+ *
+ * @param ver Version string to return.
+ * @param len Maximum length of buffer.
+ * @return Zero
+ */
+int model_version(char *ver, int len) {
+	return cvmsi_version(ver, len);
+}
+
+/**
+ * Setparam function loaded and called by the UCVM library. Calls cvmsi_setparam.
+ *
+ * @param id  don'care
+ * @param param
+ * @param val, it is actually just 1 int
+ * @return Success or fail.
+ */
+int model_setparam(int id, int param, int val) {
+        return cvmsi_setparam(id, param, val);
+}
+
+
+
+int (*get_model_init())(const char *, const char *) {
+        return &cvmsi_init;
+}
+int (*get_model_query())(cvmsi_point_t *, cvmsi_properties_t *, int) {
+         return &cvmsi_query;
+}
+int (*get_model_finalize())() {
+         return &cvmsi_finalize;
+}
+int (*get_model_version())(char *, int) {
+         return &cvmsi_version;
+}
+int (*get_model_setparam())(int, int, ...) {
+         return &cvmsi_setparam;
+}
+
+#endif
