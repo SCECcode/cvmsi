@@ -21,7 +21,7 @@ def usage():
     sys.exit(0)
 
 def download_urlfile(url,fname):
-  print(" >>> grabbing (%s) %s\n",fname,url);
+##  print(" >>> grabbing (%s) %s\n",fname,url);
   try:
     response = urlopen(url)
     CHUNK = 16 * 1024
