@@ -28,6 +28,7 @@ version 19.4.0 or higher.
 This package can also be build as a standalone program
 
 <pre>
+$ cd data; ./make_data_files.py
 $ aclocal
 $ autoconf
 $ automake
