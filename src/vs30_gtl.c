@@ -99,7 +99,9 @@ int gtl_interp(gtl_entry_t *entry, int *updated) {
   entry->vs = new_vs;
   entry->rho = new_rho;
   entry->provenance = gtlgrid.provenance;
-  for (i = 0; i < 3; i++) {
+// ??? just have 2 cells 
+//  for (i = 0; i < 3; i++) {
+  for (i = 0; i < 2; i++) {
     entry->cell[i] = gtlgrid.vs30_cell[i];
   }
 

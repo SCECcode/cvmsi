@@ -16,13 +16,19 @@ cvmsi_query: cvmsi_query.o cvmsi.o cvmsi_utils.o cvmsi_geo2xy.o \
 		utm_geo.o utm2grd.o grd2utm.o cvms_sub.o vs30_gtl.o
 	$(FC) -o $@ $^ $(AM_FCFLAGS)
 
-libcvmsi.a: cvmsi.o cvmsi_utils.o cvmsi_geo2xy.o \
+libcvmsi.a: cvmsi_static.o cvmsi_utils.o cvmsi_geo2xy.o \
 		utm_geo.o utm2grd.o grd2utm.o cvms_sub.o vs30_gtl.o
 	$(AR) rcs $@ $^ 
 
 libcvmsi.so: cvmsi.o cvmsi_utils.o cvmsi_geo2xy.o \
 		utm_geo.o utm2grd.o grd2utm.o cvms_sub.o vs30_gtl.o
 	$(FC) -shared $(AM_CFLAGS) -o libcvmsi.so $^
+
+cvmsi.o: cvmsi.c
+	$(CC) -fPIC -DDYNAMIC_LIBRARY -o $@ -c $^ $(AM_CFLAGS)
+
+cvmsi_static.o: cvmsi.c
+	$(CC) -o $@ -c $^ $(AM_CFLAGS)
 
 FD_GRID_XYZ_rect: FD_GRID_XYZ_rect.o utm2grd.o grd2utm.o utm_geo.o
 	$(FC) -o $@ $^ $(AM_FCFLAGS)
@@ -46,8 +52,7 @@ install: all
 	cp libcvmsi.so ${libdir}
 	cp cvmsi.h ${includedir}
 	cp cvmsi_query ${bindir}
-	cp -R ../model/i26 ${prefix}/model
-	cp -R ../model/cvms ${prefix}/model
 
 clean:
-	rm -rf *.o *~ *.a *.so cvmsi_query
+	rm -rf *~ *.a *.so cvmsi_query
+	rm -f $(find . -maxdepth 1 -name "*.o" ! -name "cvms_sub.o")
