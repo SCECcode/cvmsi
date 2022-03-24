@@ -47,16 +47,13 @@ int test_cvmsi_query_points_gd()
     return(1);
   }
 
-//  int rc =test_assert_file(outfile, reffile);
-//  fprintf(stderr,"RC is..%d\n",rc);
-
   /* Perform diff btw outfile and ref */
   if (test_assert_file(outfile, reffile) != 0) {
     printf("FAIL\n");
     return(1);
   }
 
-//  unlink(outfile);
+  unlink(outfile);
 
   printf("PASS\n");
   return(0);

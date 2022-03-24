@@ -98,7 +98,7 @@ int runCVMSIQuery(const char *bindir, const char *cvmdir,
 
   sprintf(runpath, "%s/run_cvmsi_query.sh", bindir);
 
-  if(debug_mode) { strcat(flags, "-d "); }
+  if(debug_mode) { strcat(flags, "-d"); }
 
   /* Save current directory */
   getcwd(currentdir, 1280);
