@@ -3,8 +3,8 @@
 # Process options
 FLAGS=""
 
-# Pass along any arguments to vx_cvms
-while getopts 'dh' OPTION
+# Pass along any arguments to cvmsi_query 
+while getopts 'm:dh' OPTION
 do
   if [ "$OPTARG" != "" ]; then
       FLAGS="${FLAGS} -$OPTION $OPTARG"

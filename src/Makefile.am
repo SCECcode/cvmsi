@@ -47,11 +47,11 @@ install: all
 	mkdir -p ${libdir}
 	mkdir -p ${includedir}
 	mkdir -p ${bindir}
-	mkdir -p ${prefix}/model
 	cp libcvmsi.a ${libdir}
 	cp libcvmsi.so ${libdir}
 	cp cvmsi.h ${includedir}
 	cp cvmsi_query ${bindir}
+	cp run_cvmsi_query.sh ${bindir}
 
 clean:
 	rm -rf *~ *.a *.so cvmsi_query
