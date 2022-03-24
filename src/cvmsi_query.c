@@ -1,26 +1,12 @@
-/*
- * @file cvmsi_query.c
- * @brief Bootstraps the test framework for the CVM-SI library.
- * @author - SCEC
- * @version 1.0
- *
- * Tests the CVMS library by loading it and executing the code as
- * UCVM would.
- *
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <getopt.h>
 #include "cvmsi.h"
 
 /* Getopt flags */
 extern char *optarg;
 extern int optind, opterr, optopt;
-
-int cvmsi_query_debug = 0;
 
 #define MAX_READ_POINTS 1000000
 
@@ -43,17 +29,12 @@ void usage() {
 
 int main(int argc, char **argv)
 {
-  // Declare the structures.
-  cvmsi_point_t *pnts = malloc(sizeof(cvmsi_point_t) * MAX_READ_POINTS);
-  cvmsi_properties_t *ret = malloc(sizeof(cvmsi_properties_t) * MAX_READ_POINTS);
-  int rc;
   int opt, i;
-  int counter = 0;
 
   /* Config variables */
   char modelpath[CVMSI_MAX_STR_LEN];
 
-  strcpy(modelpath, "../data/i26");
+  strcpy(modelpath, "../model/i26");
 
   /* Parse options */
   while ((opt = getopt(argc, argv, "hm:")) != -1) {
@@ -71,43 +52,41 @@ int main(int argc, char **argv)
     }
   }
 
-
-  // Initialize the model.
-  // try to use Use UCVM_INSTALL_PATH
-  char *envstr=getenv("UCVM_INSTALL_PATH");
-  if(envstr != NULL) {
-     assert(cvmsi_init(envstr, "cvmsi") == 0);
-     } else {
-       assert(cvmsi_init("..", "cvmsi") == 0);
+  /* Init model */
+  if (cvmsi_init(modelpath) != 0) {
+    fprintf(stderr, "Failed to initialize model\n");
+    return(1);
   }
-  printf("Loaded the model successfully.\n");
+	
+	cvmsi_point_t *pnts = malloc(sizeof(cvmsi_point_t) * MAX_READ_POINTS);
+	int counter = 0;
+	
+	/* Read in coords */
+	while (!feof(stdin)) {
+		if (fscanf(stdin,"%lf %lf %lf", &(pnts[counter].coord[0]), &(pnts[counter].coord[1]), &(pnts[counter].coord[2])) == 3) {
+			/* Check for scan failure */
+			if ((pnts[counter].coord[0] == 0.0) || (pnts[counter].coord[1] == 0.0)) {
+				continue;
+			}
+			counter++;
+		}
+	}
+	
+	cvmsi_data_t *data = malloc(sizeof(cvmsi_data_t) * MAX_READ_POINTS);
+	
+	/* Query the model */
+    cvmsi_query(pnts, data, counter);
 
-  char line[1001];
-  while (counter < MAX_READ_POINTS && fgets(line, 1000, stdin) != NULL) {
-    if(line[0]=='#') continue; // comment line
-      if (sscanf(line,"%lf %lf %lf",
-           &pnts[counter].longitude,&pnts[counter].latitude,&pnts[counter].depth) == 3) {
-           counter++;
-           continue;
-      }
-  }
-
-  if(counter > 0) {
-    rc=cvmsi_query(pnts, ret, counter);
-
-  /* Display results */
-    for (i = 0; i < counter; i++) {
-      printf("%lf %lf %lf : vs(%lf) vp(%lf) rho(%lf)\n",
-        pnts[i].longitude, pnts[i].latitude, pnts[i].depth,
-        ret[i].vs, ret[i].vp, ret[i].rho);
+	/* Display results */
+	for (i = 0; i < counter; i++) {
+		printf("%12.5lf %12.5lf %12.5lf %6d %6d %6d %10.4lf %10.4lf %10.4lf %10.4lf %10.4lf %10.4lf\n", 
+			   pnts[i].coord[0], pnts[i].coord[1], pnts[i].coord[2], data[i].xyz.coord[0]+1, data[i].xyz.coord[1]+1, 
+			   data[i].xyz.coord[2]+1, data[i].prop.vp, data[i].prop.vs, data[i].prop.rho, data[i].prop.diff_vp, 
+			   data[i].prop.diff_vs, data[i].prop.diff_rho);
     }
-  }
 
   /* Finalize */
-  assert(cvmsi_finalize() == 0);
-  printf("Model closed successfully.\n");
-
-
+  cvmsi_finalize();
 
   return(0);
 }

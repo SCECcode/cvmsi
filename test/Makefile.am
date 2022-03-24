@@ -1,10 +1,11 @@
 # Autoconf/automake file
 
-bin_PROGRAMS = unittest accepttest accept unit
+bin_PROGRAMS = unittest accepttest
 
 # General compiler/linker flags
 AM_CFLAGS = -DDYNAMIC_LIBRARY -Wall -g -std=c99 -D_LARGEFILE_SOURCE \
         -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 ${CFLAGS} -I../src -fPIC
+#??AM_LDFLAGS = ${LDFLAGS} -L../src -lcvmsi -lm -gfortran
 AM_LDFLAGS = ${LDFLAGS} -L../src -lcvmsi -lm 
 AM_FCFLAGS = ${FCFLAGS} -fPIC
 
@@ -23,13 +24,7 @@ all: $(bin_PROGRAMS)
 # Executables
 ############################################
 
-accept: accept.o
-	$(CC) -o $@ $^ $(AM_CFLAGS) $(AM_LDFLAGS)
-
-unit: unit.o
-	$(CC) -o $@ $^ $(AM_CFLAGS) $(AM_LDFLAGS)
-
-unittest: unittest.o unittest_defs.o test_helper.o test_cvmsi_exec.o test_cvmsi_query_exec.o
+unittest: unittest.o unittest_defs.o test_helper.o test_cvmsi_exec.o test_vx_cvmsi_exec.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)
 
 run_unit: unittest
