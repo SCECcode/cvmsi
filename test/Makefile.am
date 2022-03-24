@@ -1,6 +1,6 @@
 # Autoconf/automake file
 
-bin_PROGRAMS = unittest accepttest
+bin_PROGRAMS = unittest accepttest accept unit
 
 # General compiler/linker flags
 AM_CFLAGS = -DDYNAMIC_LIBRARY -Wall -g -std=c99 -D_LARGEFILE_SOURCE \
@@ -22,6 +22,12 @@ all: $(bin_PROGRAMS)
 ############################################
 # Executables
 ############################################
+
+accept: accept.o
+	$(CC) -o $@ $^ $(AM_CFLAGS) $(AM_LDFLAGS)
+
+unit: unit.o
+	$(CC) -o $@ $^ $(AM_CFLAGS) $(AM_LDFLAGS)
 
 unittest: unittest.o unittest_defs.o test_helper.o test_cvmsi_exec.o test_cvmsi_query_exec.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)

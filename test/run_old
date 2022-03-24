@@ -1,0 +1,4 @@
+#!/bin/bash
+
+env DYLD_LIBRARY_PATH=../src ./accept
+env DYLD_LIBRARY_PATH=../src ./unit
