@@ -17,8 +17,6 @@ int cvmsi_query_debug = 0;
 
 #define MAX_READ_POINTS 1000000
 
-int cvmsi_query_debug = 0;
-
 /* Usage function */
 void usage() {
   printf("\n     cvmsi_query - (c) SCEC\n");
