@@ -46,8 +46,6 @@ As part of [UCVM](https://github.com/SCECcode/ucvm) installation, use 'cvmsi' as
 
 ASCII query interface accepts points from stdin with format (lat, lon, dep (m))
 
-### wfcm_bin
-
 ## Support
 Support for CVMSI is provided by the Southern California Earthquake Center
 (SCEC) Research Computing Group.  Users can report issues and feature requests
