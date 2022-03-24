@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <getopt.h>
 #include "unittest_defs.h"
-#include "test_cvms_exec.h"
-#include "test_vx_cvms_exec.h"
+#include "test_cvmsi_exec.h"
+#include "test_cvmsi_query_exec.h"
 
 
 int main (int argc, char *argv[])
@@ -18,8 +18,8 @@ int main (int argc, char *argv[])
   }
 
   /* Run test suites */
-  suite_vx_cvms_exec(xmldir);
-  suite_cvms_exec(xmldir);
+  suite_cvmsi_exec(xmldir);
+  suite_cvmsi_query_exec(xmldir);
 
   return 0;
 }

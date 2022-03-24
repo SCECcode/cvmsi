@@ -1,9 +1,8 @@
 /**  
-   test_vx_cvms_exec.c
+   test_cvmsi_query_exec.c
 
-   invokes src/run_vx_cvms.sh/vx_cvms
-     which uses cvms api,
-       cvms_init, cvms_setparam, cvms_query, cvms_finalize
+   invokes src/run_cvmsi_query.sh
+     which uses cvmsi api,
 **/
 
 #include <string.h>
@@ -17,16 +16,16 @@
 #include "unittest_defs.h"
 #include "test_helper.h"
 
-int VX_TESTS=1;
+int QUERY_TESTS=1;
 
-int test_vx_cvms_points_gd()
+int test_cvmsi_query_points_gd()
 {
   char infile[1280];
   char outfile[1280];
   char reffile[1280];
   char currentdir[1000];
 
-  printf("Test: vx_cvms validate gd option\n");
+  printf("Test: cvmsi_query validate gd option\n");
 
   /* Save current directory */
   getcwd(currentdir, 1000);
@@ -43,8 +42,8 @@ int test_vx_cvms_points_gd()
     return(1);
   }
 
-  if (test_assert_int(runVXCVMS(BIN_DIR, MODEL_DIR, infile, outfile), 0) != 0) {
-    printf("vx_cvms failure\n");
+  if (test_assert_int(runCVMSQuery(BIN_DIR, MODEL_DIR, infile, outfile), 0) != 0) {
+    printf("cvmsi_query failure\n");
     return(1);
   }
 
@@ -63,16 +62,16 @@ int test_vx_cvms_points_gd()
   return(0);
 }
 
-int suite_vx_cvms_exec(const char *xmldir)
+int suite_cvmsi_query_exec(const char *xmldir)
 {
   suite_t suite;
   char logfile[1280];
   FILE *lf = NULL;
 
   /* Setup test suite */
-  strcpy(suite.suite_name, "suite_vx_cvms_exec");
+  strcpy(suite.suite_name, "suite_cvmsi_query_exec");
 
-  suite.num_tests = VX_TESTS;
+  suite.num_tests = QUERY_TESTS;
   suite.tests = malloc(suite.num_tests * sizeof(test_t));
   if (suite.tests == NULL) {
     fprintf(stderr, "Failed to alloc test structure\n");
@@ -81,8 +80,8 @@ int suite_vx_cvms_exec(const char *xmldir)
   test_get_time(&suite.exec_time);
 
   /* Setup test cases */
-  strcpy(suite.tests[0].test_name, "test_vx_cvms_points_gd");
-  suite.tests[0].test_func = &test_vx_cvms_points_gd;
+  strcpy(suite.tests[0].test_name, "test_cvmsi_query_points_gd");
+  suite.tests[0].test_func = &test_cvmsi_query_points_gd;
   suite.tests[0].elapsed_time = 0.0;
 
   if (test_run_suite(&suite) != 0) {

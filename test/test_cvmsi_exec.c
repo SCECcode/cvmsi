@@ -1,7 +1,7 @@
 /**
-   test_cvms_exec.c
+   test_cvmsi_exec.c
 
-   invoke cvms api
+   invoke cvmsi api
 **/
 
 #include <string.h>
@@ -16,7 +16,7 @@
 #include "test_helper.h"
 #include "ucvm_model_dtypes.h"
 
-int CVMS_TESTS=5;
+int CVMSI_TESTS=5;
 
 int test_setup()
 {
@@ -24,10 +24,10 @@ int test_setup()
 
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "cvms"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "cvmsi"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "cvms"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "cvmsi"), 0) != 0) {
     return(1);
   }
 
@@ -46,10 +46,10 @@ int test_setparam()
 // Initialize the model, try to use Use UCVM_INSTALL_PATH
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "cvms"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "cvmsi"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "cvms"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "cvmsi"), 0) != 0) {
     return(1);
   }
 
@@ -70,16 +70,16 @@ int test_query_by_depth()
 {
   printf("Test: model_query() by depth\n");
 
-  cvms_point_t pt;
-  cvms_properties_t ret;
+  cvmsi_point_t pt;
+  cvmsi_properties_t ret;
 
 // Initialize the model, try to use Use UCVM_INSTALL_PATH
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "cvms"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "cvmsi"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "cvms"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "cvmsi"), 0) != 0) {
     return(1);
   }
 
@@ -119,16 +119,16 @@ int test_query_by_elevation()
 {
   printf("Test: model_query() by elevation\n");
 
-  cvms_point_t pt;
-  cvms_properties_t ret;
+  cvmsi_point_t pt;
+  cvmsi_properties_t ret;
 
 // Initialize the model, try to use Use UCVM_INSTALL_PATH
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "cvms"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "cvmsi"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "cvms"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "cvmsi"), 0) != 0) {
     return(1);
   }
 
@@ -141,7 +141,7 @@ int test_query_by_elevation()
   pt.longitude = -118.1;
   pt.latitude = 34.0;
   double pt_elevation = -1500;
-  double pt_surf = 49.9;
+  double pt_surf = 58.8; // 49.9;
   pt.depth = pt_surf - pt_elevation; // elevation
 
   if (test_assert_int(model_query(&pt, &ret, 1), 0) != 0) {
@@ -172,8 +172,8 @@ int test_query_points_by_elevation()
   printf("Test: model_query() points by elevation\n");
 
   FILE  *infp, *outfp;
-  cvms_point_t pt;
-  cvms_properties_t ret;
+  cvmsi_point_t pt;
+  cvmsi_properties_t ret;
   double elev;
   double surf;
 
@@ -211,10 +211,10 @@ int test_query_points_by_elevation()
 
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "cvms"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "cvmsi"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "cvms"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "cvmsi"), 0) != 0) {
     return(1);
   }
 
@@ -258,15 +258,15 @@ int test_query_points_by_elevation()
 
 
 
-int suite_cvms_exec(const char *xmldir)
+int suite_cvmsi_exec(const char *xmldir)
 {
   suite_t suite;
   char logfile[256];
   FILE *lf = NULL;
 
  /* Setup test suite */
-  strcpy(suite.suite_name, "suite_cvms_exec");
-  suite.num_tests = CVMS_TESTS;
+  strcpy(suite.suite_name, "suite_cvmsi_exec");
+  suite.num_tests = CVMSI_TESTS;
   suite.tests = malloc(suite.num_tests * sizeof(test_t));
   if (suite.tests == NULL) {
     fprintf(stderr, "Failed to alloc test structure\n");
