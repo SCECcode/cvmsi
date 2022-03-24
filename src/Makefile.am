@@ -36,18 +36,21 @@ utm2lonlat: utm2lonlat.o utm_geo.o
 $(objects): %.o: %.f90
 	$(FC) -o $@ -c $^ $(AM_FCFLAGS)	
 
+cvmsi.o: cvmsi.c
+	$(CC) -fPIC -DDYNAMIC_LIBRARY -o $@ -c $^ $(AM_CFLAGS)
+
+cvmsi_static.o: cvmsi.c
+	$(CC) -o $@ -c $^ $(AM_CFLAGS)
+
 install: all
 	mkdir -p ${prefix}
 	mkdir -p ${libdir}
 	mkdir -p ${includedir}
 	mkdir -p ${bindir}
-	mkdir -p ${prefix}/model
 	cp libcvmsi.a ${libdir}
 	cp libcvmsi.so ${libdir}
 	cp cvmsi.h ${includedir}
 	cp cvmsi_query ${bindir}
-	cp -R ../model/i26 ${prefix}/model
-	cp -R ../model/cvms ${prefix}/model
 
 clean:
 	rm -rf *.o *~ *.a *.so cvmsi_query

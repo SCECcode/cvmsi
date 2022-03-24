@@ -83,10 +83,18 @@ int cvmsi_init(const char *dir, const char *label) {
   cvmsi_configuration = calloc(1, sizeof(cvmsi_configuration_t));
 
   /* Configuration file location when built with UCVM
-         srcdir/model/cvmsi/data/config
+         UCVM... model/cvmsi/data/config
                                 /cvms
-                                /i26                     */
-  sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+                                /i26 
+     Configuration file location when there is no UCVM 
+         src...  ../data/config                         */
+     
+  char *envstr=getenv("UCVM_INSTALL_PATH");
+  if(envstr != NULL) {
+     sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+     } else {
+       sprintf(configbuf, "%s/data/config", dir);
+  }
 
   cvmsi_pnts_buffer = malloc(CVMSI_MAX_POINTS*sizeof(_cvmsi_point_t));
   cvmsi_data_buffer = malloc(CVMSI_MAX_POINTS*sizeof(_cvmsi_data_t));
@@ -97,7 +105,11 @@ int cvmsi_init(const char *dir, const char *label) {
     return(UCVM_CODE_ERROR);
   }
 
-  sprintf(modelpath, "%s/model/%s/data/%s", dir, label, cvmsi_configuration->model_dir);
+  if(envstr != NULL) {
+     sprintf(modelpath, "%s/model/%s/data/%s", dir, label, cvmsi_configuration->model_dir);
+     } else {
+       sprintf(modelpath, "%s/data/%s", dir, cvmsi_configuration->model_dir);
+  }
   cvmsi_izone=0;
   sprintf(cvmsi_inputfile, "%s/region_spec.in", modelpath);
   sprintf(cvmsi_gridfile, "%s/XYZGRD", modelpath);
@@ -122,8 +134,8 @@ int cvmsi_init(const char *dir, const char *label) {
     if (lineno == 1) {
       /* utm zone */
       if (sscanf(line, "%d", &cvmsi_izone) != 1) {
-  fprintf(stderr, "Failed to parse utm zone from input file\n");
-  return(UCVM_CODE_ERROR);
+        fprintf(stderr, "Failed to parse utm zone from input file\n");
+        return(UCVM_CODE_ERROR);
       }
     }
     lineno++;
@@ -239,7 +251,12 @@ int cvmsi_init(const char *dir, const char *label) {
     cvmsi_print_error("model path too long to embedded cvms data.");
     return(UCVM_CODE_ERROR);
   }
-  sprintf(cvms_modeldir, "%s/model/%s/data/%s",dir,label,cvmsi_configuration->cvms_dir);
+
+  if(envstr != NULL) {
+     sprintf(cvms_modeldir, "%s/model/%s/data/%s",dir,label,cvmsi_configuration->cvms_dir);
+     } else {
+       sprintf(cvms_modeldir, "%s/data/%s",dir,cvmsi_configuration->cvms_dir);
+  }
 
   int errcode = 0;
   cvms_init_(cvms_modeldir, &errcode, CVMSI_FORTRAN_MODELDIR_LEN);
@@ -268,6 +285,7 @@ int cvmsi_init(const char *dir, const char *label) {
  * @return Success or failure, depending on if file was read successfully.
  */
 int cvmsi_read_configuration(char *file, cvmsi_configuration_t *config) {
+
   FILE *fp = fopen(file, "r");
   char key[40];
   char value[80];

@@ -23,5 +23,5 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([memset pow sqrt strchr])
 
-AC_CONFIG_FILES([Makefile src/Makefile data/cvms/Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile data/cvms/Makefile test/Makefile])
 AC_OUTPUT

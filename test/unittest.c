@@ -18,8 +18,8 @@ int main (int argc, char *argv[])
   }
 
   /* Run test suites */
-  suite_cvmsi_query_exec(xmldir);
   suite_cvmsi_exec(xmldir);
+  suite_cvmsi_query_exec(xmldir);
 
   return 0;
 }
