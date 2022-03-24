@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
 #include "cvmsi.h"
 
 #define SUCCESS 1
@@ -85,42 +86,42 @@ int runTest(int num, float lon, float lat, float depth, char *moveOn, float move
     
     // Check that everything pairs up.
     if (expectedX != data.xyz.coord[0] + 1) {
-      sprintf(errStr, "%s  Error! X for (%.2f, %.2f) at depth %.2f is %u, not %u as expected.\n", 
+      sprintf(errStr, "%s   Error! X for (%.2f, %.2f) at depth %.2f is %u, not %u as expected.\n", 
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], data.xyz.coord[0] + 1, expectedX);
       passed = FAIL;
     }
     if (expectedY != data.xyz.coord[1] + 1) {
-      sprintf(errStr, "%s  Error! Y for (%.2f, %.2f) at depth %.2f is %u, not %u as expected.\n",
+      sprintf(errStr, "%s   Error! Y for (%.2f, %.2f) at depth %.2f is %u, not %u as expected.\n",
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], data.xyz.coord[1] + 1, expectedY);
       passed = FAIL;
     }
     if (expectedZ != data.xyz.coord[2] + 1) {
-      sprintf(errStr, "%s  Error! Z for (%.2f, %.2f) at depth %.2f is %u, not %u as expected.\n", 
+      sprintf(errStr, "%s   Error! Z for (%.2f, %.2f) at depth %.2f is %u, not %u as expected.\n", 
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], data.xyz.coord[2] + 1, expectedZ);
       passed = FAIL;
     }
     if (expectedVp != convertTo10P4(data.prop.vp)) {
-      sprintf(errStr, "%s  Error! Vp for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
+      sprintf(errStr, "%s   Error! Vp for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], convertTo10P4(data.prop.vp), expectedVp);
       passed = FAIL;
     }
     if (expectedVs != convertTo10P4(data.prop.vs)) {
-      sprintf(errStr, "%s  Error! Vs for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
+      sprintf(errStr, "%s   Error! Vs for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], convertTo10P4(data.prop.vs), expectedVs);
       passed = FAIL;
     }
     if (expectedRho != convertTo10P4(data.prop.rho)) {
-      sprintf(errStr, "%s  Error! Rho for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
+      sprintf(errStr, "%s   Error! Rho for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], convertTo10P4(data.prop.rho), expectedRho);
       passed = FAIL;
     }
     if (expectedDiffVp != convertTo10P4(data.prop.diff_vp)) {
-      sprintf(errStr, "%s  Error! Vp perturbation for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
+      sprintf(errStr, "%s   Error! Vp perturbation for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], convertTo10P4(data.prop.diff_vp), expectedDiffVp);
       passed = FAIL;
     }
     if (expectedDiffVs != convertTo10P4(data.prop.diff_vs)) {
-      sprintf(errStr, "%s  Error! Vs perturbation for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
+      sprintf(errStr, "%s   Error! Vs perturbation for (%.2f, %.2f) at depth %.2f is %f, not %f as expected.\n", 
             errStr, pnt.coord[0], pnt.coord[1], pnt.coord[2], convertTo10P4(data.prop.diff_vs), expectedDiffVs);
       passed = FAIL;
     }
@@ -134,7 +135,7 @@ int runTest(int num, float lon, float lat, float depth, char *moveOn, float move
  */
 int main(int argc, char **argv) {
   char version[128];
-  char errStr[4096]="";
+  char errStr[6000];
   printf("\nStarting Acceptance Tests\n");
 
   cvmsi_init("..","cvmsi");
@@ -142,9 +143,10 @@ int main(int argc, char **argv) {
   cvmsi_version(version, sizeof(version));
   printf("Version ID: %s\nNumber of tests: 3\n\n", version);
   
-  printf("%-40s", "Starting Test 1 (change lat): ");
+  printf("%-40s", "\nStarting Test 1 (change lat): ");
   
   // Test one. Takes a row from (-118, 34) to (-118, 35)
+  strcpy(errStr,"");
   int result = runTest(1, -118, 34, 0, "lat", 35, 0.1, errStr);
   int didFail = 0;
   
@@ -155,10 +157,10 @@ int main(int argc, char **argv) {
 
   if (result == FAIL) didFail = 1;
   
-  printf("%-40s", "Starting Test 2 (change long): ");
-  strcpy(errStr,"");
+  printf("%-40s", "\nStarting Test 2 (change long): ");
   
   // Test two. Takes a row from (-118, 35) to (-117, 35).
+  strcpy(errStr,"");
   result = runTest(2, -117, 35, 20000, "long", -118, -0.5, errStr);
   
   if (result == SUCCESS) 
@@ -168,10 +170,10 @@ int main(int argc, char **argv) {
   
   if (result == FAIL) didFail = 1;
 
-  printf("%-40s", "Starting Test 3 (boundary test): ");
-  strcpy(errStr,"");
+  printf("%-40s", "\nStarting Test 3 (boundary test): ");
   
   // Test three. Goes out of bounds. Ensures that we get CVM-S data only.
+  strcpy(errStr,"");
   result = runTest(3, -120, 34, 500, "long", -122, -1, errStr);
   
   if (result == SUCCESS) 

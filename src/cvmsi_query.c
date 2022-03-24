@@ -1,3 +1,8 @@
+/**
+   cvmsi_query.c
+
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,14 +32,27 @@ void usage() {
 }
 
 
+/**
+ * Initializes and CVM-SI in standalone mode 
+ *
+ * @param argc The number of arguments.
+ * @param argv The argument strings.
+ * @return A zero value indicating success.
+ */
 int main(int argc, char **argv)
 {
   int opt, i;
 
   /* Config variables */
-  char modelpath[CVMSI_MAX_STR_LEN];
+  char modelpath[CVMSI_MAX_PATH_LEN];
 
-  strcpy(modelpath, "..");
+
+  char *envstr=getenv("UCVM_INSTALL_PATH");
+  if(envstr != NULL) {
+    strcpy(modelpath,envstr);
+    } else {
+       strcpy(modelpath, "..");
+  }
 
   /* Parse options */
   while ((opt = getopt(argc, argv, "hm:")) != -1) {
@@ -62,7 +80,11 @@ int main(int argc, char **argv)
   int counter = 0;
   
   /* Read in coords */
-  while (!feof(stdin)) {
+
+
+  char line[1001];
+  while (fgets(line, 1000, stdin) != NULL) {
+    if(line[0]=='#') continue; // comment line
     if (fscanf(stdin,"%lf %lf %lf", &(pnts[counter].coord[0]), &(pnts[counter].coord[1]), &(pnts[counter].coord[2])) == 3) {
       /* Check for scan failure */
       if ((pnts[counter].coord[0] == 0.0) || (pnts[counter].coord[1] == 0.0)) {
@@ -71,7 +93,7 @@ int main(int argc, char **argv)
       counter++;
     }
   }
-  
+
   _cvmsi_data_t *data = malloc(sizeof(_cvmsi_data_t) * MAX_READ_POINTS);
   
   /* Query the model */

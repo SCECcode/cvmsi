@@ -250,7 +250,12 @@ int cvmsi_init(const char *dir, const char *label) {
     cvmsi_print_error("model path too long to embedded cvms data.");
     return(UCVM_CODE_ERROR);
   }
-  sprintf(cvms_modeldir, "%s/model/%s/data/%s",dir,label,cvmsi_configuration->cvms_dir);
+
+  if(envstr != NULL) {
+     sprintf(cvms_modeldir, "%s/model/%s/data/%s",dir,label,cvmsi_configuration->cvms_dir);
+     } else {
+       sprintf(cvms_modeldir, "%s/data/%s",dir,cvmsi_configuration->cvms_dir);
+  }
 
   int errcode = 0;
 //  cvms_init_(cvms_modeldir, &errcode, CVMSI_FORTRAN_MODELDIR_LEN);

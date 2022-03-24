@@ -55,4 +55,4 @@ install: all
 
 clean:
 	rm -rf *~ *.a *.so cvmsi_query
-	rm -f $(find . -maxdepth 1 -name "*.o" ! -name "cvms_sub.o")
+	find . -maxdepth 1 -type f -name "*.o" ! -name "cvms_sub.o" -exec rm {} \;

@@ -91,19 +91,19 @@ int test_query_by_depth()
   // Query a point.
   pt.longitude = -118.1;
   pt.latitude = 34.0;
-  pt.depth = 1500;
+  pt.depth = 1500; // surface 55.837, vs30 293.5
 
   if (test_assert_int(model_query(&pt, &ret, 1), 0) != 0) {
       return(1);
   }
 
-  if ((test_assert_double(ret.vs, 1564.248535), 0) != 0) {
+  if ((test_assert_double(ret.vs, 1624.956), 0) != 0) {
       return(1);
   }
-  if ((test_assert_double(ret.vp, 2963.767090), 0) != 0) {
+  if ((test_assert_double(ret.vp, 2873.24), 0) != 0) {
       return(1);
   }
-  if ((test_assert_double(ret.rho, 2332.978760), 0) != 0) {
+  if ((test_assert_double(ret.rho, 2332.979), 0) != 0) {
       return(1);
   }
   // printf("Query was successful.\n");
@@ -141,20 +141,21 @@ int test_query_by_elevation()
   pt.longitude = -118.1;
   pt.latitude = 34.0;
   double pt_elevation = -1500;
-  double pt_surf = 58.8; // 49.9;
+  double pt_surf = 55.837; // 49.9;
   pt.depth = pt_surf - pt_elevation; // elevation
+//  fprintf(stderr,"depth would be %lf \n",pt.depth);
 
   if (test_assert_int(model_query(&pt, &ret, 1), 0) != 0) {
       return(1);
   }
 
-  if ((test_assert_double(ret.vs, 1586.550659), 0) != 0) {
+  if ((test_assert_double(ret.vs, 1659.86), 0) != 0) {
       return(1);
   }
-  if ((test_assert_double(ret.vp, 2996.268555), 0) != 0) {
+  if ((test_assert_double(ret.vp, 2897.349), 0) != 0) {
       return(1);
   }
-  if ((test_assert_double(ret.rho, 2338.110840), 0) != 0) {
+  if ((test_assert_double(ret.rho, 2338.714), 0) != 0) {
       return(1);
   }
   //printf("Query was successful.\n");

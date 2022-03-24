@@ -1,4 +1,4 @@
 #!/bin/bash
 
 env DYLD_LIBRARY_PATH=../src ./accept_cvmsi
-env DYLD_LIBRARY_PATH=../src ./unit_cvmsi
+#env DYLD_LIBRARY_PATH=../src ./unit_cvmsi

@@ -24,6 +24,10 @@ SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 IN_FILE=$1
 OUT_FILE=$2
 
+echo $IN_FILE
+echo $OUT_FILE
+echo $FLAGS
+
 ${SCRIPT_DIR}/cvmsi_query ${FLAGS} < ${IN_FILE} > ${OUT_FILE}
 
 if [ $? -ne 0 ]; then

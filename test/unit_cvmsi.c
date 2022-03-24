@@ -113,6 +113,8 @@ int secondTest(char *errStr) {
 int main(int argc, char **argv) {
 	char version[128];
 	char errStr[4096];
+        strcpy(errStr,"");
+
 	printf("\nStarting Unit Tests\n");
 	cvmsi_init("..","cvmsi");
 	cvmsi_version(version, sizeof(version));
@@ -128,6 +130,7 @@ int main(int argc, char **argv) {
 	else
 		printf("[FAILED]\n%s", errStr);
 	
+        strcpy(errStr,"");
 	if (result == FAIL) didFail = 1;
 	
 	printf("%-40s", "Starting Test 2 (UTM convert check): ");
@@ -138,6 +141,7 @@ int main(int argc, char **argv) {
 	else
 		printf("[FAILED]\n%s", errStr);
 	
+        strcpy(errStr,"");
 	if (result == FAIL) didFail = 1;
 	
 	printf("\n");

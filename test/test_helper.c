@@ -26,7 +26,7 @@ int test_assert_file_exist(const char* filename)
 
 double get_preset_ucvm_surface(double y, double x) {
    if(y == -118.1 && x == 34.0) {
-      return 55.827;
+      return 55.837;
    }
    return 0;
 }
