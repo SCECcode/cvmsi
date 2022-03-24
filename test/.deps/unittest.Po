@@ -101,7 +101,7 @@ unittest.o: unittest.c \
  unittest_defs.h \
  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/time.h \
  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_clock_t.h \
- test_cvms_exec.h
+ test_cvmsi_exec.h test_cvmsi_query_exec.h
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/string.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types.h:
@@ -204,4 +204,5 @@ unittest.o: unittest.c \
 unittest_defs.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/time.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_clock_t.h:
-test_cvms_exec.h:
+test_cvmsi_exec.h:
+test_cvmsi_query_exec.h:

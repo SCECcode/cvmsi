@@ -29,7 +29,6 @@ accept_cvmsi : accept_cvmsi.o
 unit_cvmsi : unit_cvmsi.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)
 	
-
 unittest: unittest.o unittest_defs.o test_helper.o test_cvmsi_exec.o test_cvmsi_query_exec.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)
 
@@ -41,6 +40,12 @@ accepttest: accepttest.o unittest_defs.o test_helper.o test_grid_exec.o
 
 run_accept: accepttest
 	./run_accept
+
+accept_cvmsi.o : accept_cvmsi.c
+	$(CC) -o $@ $^ $(AM_LDFLAGS)  
+
+unit_cvmsi.o : unit_cvmsi.c
+	$(CC) -o $@ $^ $(AM_LDFLAGS)  
 
 clean:
 	rm -rf *.o $(bin_PROGRAMS)

@@ -1,7 +1,7 @@
 #ifndef TEST_HELPER_H
 #define TEST_HELPER_H
 
-#include "cvms.h"
+#include "cvmsi.h"
 
 int test_assert_file_exist(const char* filename);
 

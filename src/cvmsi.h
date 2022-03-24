@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdarg.h>
 
 #include "ucvm_model_dtypes.h"
 
@@ -24,6 +25,7 @@
 
 /* Max array size for Z dimension */
 #define CVMSI_MAX_ZGRID 3000
+#define CVMSI_MAX_POINTS 1000000
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -128,17 +130,17 @@ int cvmsi_finalize();
 int cvmsi_version(char *ver, int len);
 /* Query */
 int cvmsi_query(cvmsi_point_t *pnt, cvmsi_properties_t *data, int numpts);
-** Setparam*/
+/* Setparam */
 int cvmsi_setparam(int, int, ...);
 
 // Non-UCVM Helper Functions
-/** Reads the configuration file. */
+/* Reads the configuration file. */
 int cvmsi_read_configuration(char *file, cvmsi_configuration_t *config);
 void cvmsi_print_error(char *err);
 
-* forward declaration */
+/* forward declaration */
 void utm_geo_(double*, double*, double*, double*, int*, int*);
-int _cvms_query(_cvmsi_point_t *pnt, _cvmsi_data_t *data, int numpts);
+int _cvmsi_query(_cvmsi_point_t *pnt, _cvmsi_data_t *data, int numpts);
 
 
 #endif

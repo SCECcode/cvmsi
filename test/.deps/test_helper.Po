@@ -126,7 +126,9 @@ test_helper.o: test_helper.c \
  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fsfilcnt_t.h \
  unittest_defs.h \
  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/time.h \
- test_helper.h ../src/cvms.h ../src/ucvm_model_dtypes.h
+ test_helper.h ../src/cvmsi.h \
+ /usr/local/Cellar/gcc/10.2.0_4/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed/math.h \
+ ../src/ucvm_model_dtypes.h
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_types.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types.h:
@@ -255,5 +257,6 @@ test_helper.o: test_helper.c \
 unittest_defs.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/time.h:
 test_helper.h:
-../src/cvms.h:
+../src/cvmsi.h:
+/usr/local/Cellar/gcc/10.2.0_4/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed/math.h:
 ../src/ucvm_model_dtypes.h:

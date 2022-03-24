@@ -15,7 +15,7 @@
 #include "cvmsi_geo2xy.h"
 #include "vs30_gtl.h"
 
-#include "../model/cvms/cvms.h"
+#include "../data/cvms/cvms.h"
 
 /* Init flag */
 int cvmsi_is_initialized = 0;
@@ -81,10 +81,18 @@ int cvmsi_init(const char *dir, const char *label) {
   cvmsi_configuration = calloc(1, sizeof(cvmsi_configuration_t));
 
   /* Configuration file location when built with UCVM
-         srcdir/model/cvmsi/data/config
-                                /cvms
-                                /i26                     */
-  sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+         UCVM... model/cvmsi/data/config
+                                 /cvms
+                                 /i26
+         SRC..   model/conf
+                      /cvms
+                      /i26                         */
+  char *envstr=getenv("UCVM_INSTALL_PATH");
+  if(envstr != NULL) {
+     sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+     } else {
+        sprintf(configbuf, "%s/data/config", dir);
+  }
 
   cvmsi_pnts_buffer = malloc(CVMSI_MAX_POINTS*sizeof(_cvmsi_point_t));
   cvmsi_data_buffer = malloc(CVMSI_MAX_POINTS*sizeof(_cvmsi_data_t));
@@ -95,7 +103,12 @@ int cvmsi_init(const char *dir, const char *label) {
     return(UCVM_CODE_ERROR);
   }
 
-  sprintf(modelpath, "%s/model/%s/data/%s", dir, label, cvmsi_configuration->model_dir);
+  if(envstr != NULL) {
+    sprintf(modelpath, "%s/model/%s/data/%s", dir, label, cvmsi_configuration->model_dir);
+    } else {
+      sprintf(modelpath, "%s/data/%s", dir, cvmsi_configuration->model_dir);
+  }
+
   cvmsi_izone=0;
   sprintf(cvmsi_inputfile, "%s/region_spec.in", modelpath);
   sprintf(cvmsi_gridfile, "%s/XYZGRD", modelpath);
@@ -120,8 +133,8 @@ int cvmsi_init(const char *dir, const char *label) {
     if (lineno == 1) {
       /* utm zone */
       if (sscanf(line, "%d", &cvmsi_izone) != 1) {
-  fprintf(stderr, "Failed to parse utm zone from input file\n");
-  return(UCVM_CODE_ERROR);
+        fprintf(stderr, "Failed to parse utm zone from input file\n");
+        return(UCVM_CODE_ERROR);
       }
     }
     lineno++;
@@ -223,7 +236,7 @@ int cvmsi_init(const char *dir, const char *label) {
   }
   memset(cvmsi_version_id, 0, CVMSI_MAX_STR_LEN);
   if (fgets(cvmsi_version_id, CVMSI_MAX_STR_LEN - 1, ip) == NULL) {
-    fprintf(stderr, "Failed to read in version file %s\n", verfile);
+    fprintf(stderr, "Failed to read in version file %s\n", cvmsi_verfile);
     return(UCVM_CODE_ERROR);
   }
   fclose(ip);
@@ -232,7 +245,7 @@ int cvmsi_init(const char *dir, const char *label) {
   char cvms_modeldir[CVMSI_FORTRAN_MODELDIR_LEN];
 
  // model's data location
-  int pathlen=strlen(dir)+strlen(label)+strlen(cvms_configuration->cvms_dir); // throw in some extra
+  int pathlen=strlen(dir)+strlen(label)+strlen(cvmsi_configuration->cvms_dir); // throw in some extra
   if (pathlen >= CVMSI_FORTRAN_MODELDIR_LEN) {
     cvmsi_print_error("model path too long to embedded cvms data.");
     return(UCVM_CODE_ERROR);
@@ -240,10 +253,11 @@ int cvmsi_init(const char *dir, const char *label) {
   sprintf(cvms_modeldir, "%s/model/%s/data/%s",dir,label,cvmsi_configuration->cvms_dir);
 
   int errcode = 0;
-  cvms_init_(cvms_modeldir, &errcode, CVMSI_FORTRAN_MODELDIR_LEN);
+//  cvms_init_(cvms_modeldir, &errcode, CVMSI_FORTRAN_MODELDIR_LEN);
+  cvms_init_(cvms_modeldir, &errcode);
 
 // ??? not sure where is this from
-  sprintf(cvmsi_gtldir, "%s/cvm_vs30_wills", cvmsi_modelpath);
+  sprintf(cvmsi_gtldir, "%s/cvm_vs30_wills", modelpath);
   if (ADD_GTL) {
     gtl_setup(cvmsi_gtldir);
   }
@@ -289,7 +303,7 @@ int cvmsi_read_configuration(char *file, cvmsi_configuration_t *config) {
 
   // Have we set up all cvms_configuration parameters?
   if (config->utm_zone == 0) {
-    cvms_print_error("One cvms_configuration parameter not specified. Please check your cvms_configuration file.");
+    cvmsi_print_error("One cvms_configuration parameter not specified. Please check your cvms_configuration file.");
     return UCVM_CODE_ERROR;
   }
 
@@ -366,7 +380,7 @@ int cvmsi_setparam(int id, int param, ...)
           /* point from ucvm is always for depth */
           break;
         default:
-          cvms_print_error("Unsupported coord type\n");
+          cvmsi_print_error("Unsupported coord type\n");
           return UCVM_CODE_ERROR;
           break;
        }
@@ -398,7 +412,7 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_properties_t *data, int numpoints) {
   }
 
   int nn = 0;
-  for (i = 0; i < n; i++) {
+  for (i = 0; i < numpoints; i++) {
 // initialize the data
       data[i].vp=-1;
       data[i].vs=-1;
@@ -406,8 +420,8 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_properties_t *data, int numpoints) {
       data[i].qp=-1;
       data[i].qs=-1;
 
-      depth = data[i].depth; //??? 
-        
+      depth = pnt[i].depth;
+
       /* CVM-SI extends from free surface on down */
       if (depth >= 0.0) {
         index_mapping[nn]=i;  
@@ -445,7 +459,7 @@ int cvmsi_query(cvmsi_point_t *pnt, cvmsi_properties_t *data, int numpoints) {
 }
 
 /* internal query to cvms and then preprocess */
-int _cvms_query(_cvmsi_point_t *pnt, _cvmsi_data_t *data, int numpts) {
+int _cvmsi_query(_cvmsi_point_t *pnt, _cvmsi_data_t *data, int numpts) {
   
   int errcode;
   int x, y, z, i, j, k, offset;
@@ -681,7 +695,7 @@ int _cvms_query(_cvmsi_point_t *pnt, _cvmsi_data_t *data, int numpts) {
             curData->prop.rho = entry->rho;
         }
         
-        memcpy(&data[counter], curData, sizeof(cvmsi_data_t));
+        memcpy(&data[counter], curData, sizeof(_cvmsi_data_t));
         free(curData);
   }
 

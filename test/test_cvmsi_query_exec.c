@@ -42,7 +42,7 @@ int test_cvmsi_query_points_gd()
     return(1);
   }
 
-  if (test_assert_int(runCVMSQuery(BIN_DIR, MODEL_DIR, infile, outfile), 0) != 0) {
+  if (test_assert_int(runCVMSIQuery(BIN_DIR, MODEL_DIR, infile, outfile), 0) != 0) {
     printf("cvmsi_query failure\n");
     return(1);
   }
