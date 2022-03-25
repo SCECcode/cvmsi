@@ -13,9 +13,9 @@
 extern char *optarg;
 extern int optind, opterr, optopt;
 
-#define MAX_READ_POINTS 1000000
-
 int cvmsi_query_debug = 0;
+
+#define MAX_READ_POINTS 1000000
 
 /* Usage function */
 void usage() {
