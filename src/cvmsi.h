@@ -115,6 +115,8 @@ int model_init(const char *dir, const char *label);
 int model_finalize();
 /** Returns version information */
 int model_version(char *ver, int len);
+/** Returns config information */
+int model_config(char **config, int *sz);
 /** Queries the model */
 int model_query(cvmsi_point_t *points, cvmsi_properties_t *data, int numpts);
 /** Setparam */
@@ -131,6 +133,8 @@ int cvmsi_init(const char *dir, const char *label);
 int cvmsi_finalize();
 /* Version ID */
 int cvmsi_version(char *ver, int len);
+/* config  ID */
+int cvmsi_config(char **config, int *sz);
 /* Query */
 int cvmsi_query(cvmsi_point_t *pnt, cvmsi_properties_t *data, int numpts);
 /* Setparam */
