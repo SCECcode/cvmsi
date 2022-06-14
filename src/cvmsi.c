@@ -23,6 +23,10 @@ int cvmsi_is_initialized = 0;
 /* Model conf */
 cvmsi_configuration_t *cvmsi_configuration;
 
+/** The config of the model */
+char *cvmsi_config_string=NULL;
+int cvmsi_config_sz=0;
+
 #define ADD_GTL 0
 #define ADD_ALT_GTL 0
 #define ADD_ROB_GTL 0
@@ -69,6 +73,10 @@ int cvmsi_init(const char *dir, const char *label) {
 
   char configbuf[CVMSI_MAX_PATH_LEN];
   char modelpath[CVMSI_MAX_PATH_LEN];
+
+  cvmsi_config_string = calloc(CVMSI_CONFIG_MAX, sizeof(char));
+  cvmsi_config_string[0]='\0';
+  cvmsi_config_sz=0;
 
   if (dir == NULL) { return(UCVM_CODE_ERROR); }
 
@@ -267,6 +275,10 @@ int cvmsi_init(const char *dir, const char *label) {
     gtl_setup(cvmsi_gtldir);
   }
     
+  /* setup config_string */
+  sprintf(cvmsi_config_string,"config = %s\n",configbuf);
+  cvmsi_config_sz=1;
+
   cvmsi_is_initialized = 1;
  
   return(UCVM_CODE_SUCCESS);
@@ -339,6 +351,8 @@ int cvmsi_finalize()
     free(cvmsi_data_buffer);
     cvmsi_data_buffer = NULL;
   }
+
+  if (cvmsi_config_string) free(cvmsi_config_string);
  
   cvmsi_is_initialized = 0;
   return UCVM_CODE_SUCCESS;
@@ -362,6 +376,23 @@ int cvmsi_version(char *ver, int len)
   memset(ver, 0, len);
   strncpy(ver, cvmsi_version_id, verlen);
   return UCVM_CODE_SUCCESS;
+}
+
+/**
+ * Returns the model config information.
+ *
+ * @param key Config key string to return.
+ * @return Zero
+ */
+int cvmsi_config(char **config, int *sz)
+{
+  int len=strlen(cvmsi_config_string);
+  if(len > 0) {
+    *config=cvmsi_config_string;
+    *sz=cvmsi_config_sz;
+    return UCVM_CODE_SUCCESS;
+  }
+  return UCVM_CODE_ERROR;
 }
 
 /**
@@ -793,6 +824,9 @@ int (*get_model_finalize())() {
 }
 int (*get_model_version())(char *, int) {
          return &cvmsi_version;
+}
+int (*get_model_config())(char **, int *) {
+         return &cvmsi_config;
 }
 int (*get_model_setparam())(int, int, ...) {
          return &cvmsi_setparam;

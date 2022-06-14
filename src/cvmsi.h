@@ -31,6 +31,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+/* config string */
+#define CVMSI_CONFIG_MAX 1000
+
 // structure started with _ are from original cvmsi codebase
 //  
 
