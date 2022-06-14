@@ -800,6 +800,17 @@ int model_version(char *ver, int len) {
 }
 
 /**
+ * Config function loaded and called by the UCVM library. Calls cvmsi_config.
+ *
+ * @param config Config string to return.
+ * @param sz length of config terms.
+ * @return Zero
+ */
+int model_config(char **config, int *sz) {
+        return cvmsi_config(config, sz);
+}
+
+/**
  * Setparam function loaded and called by the UCVM library. Calls cvmsi_setparam.
  *
  * @param id  don'care
