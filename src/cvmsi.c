@@ -382,6 +382,7 @@ int cvmsi_version(char *ver, int len)
  * Returns the model config information.
  *
  * @param key Config key string to return.
+ * @param sz number of config terms.
  * @return Zero
  */
 int cvmsi_config(char **config, int *sz)
