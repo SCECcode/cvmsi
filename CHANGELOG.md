@@ -1,3 +1,6 @@
+## Aug 2022 Mei-Hui Su <mei@usc.edu>
+* merge in ci into main branch
+
 ## March 2021 Mei-Hui Su <mei@usc.edu>
 * Convert to a plug-in model for UCVM 
 * Add github/runner/action continuous integration testing 
