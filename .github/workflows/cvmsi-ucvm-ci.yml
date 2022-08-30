@@ -15,12 +15,12 @@ jobs:
       run: echo "UCVM_SRC_PATH=$RUNNER_WORKSPACE/cvmsi/ucvm" >> $GITHUB_ENV
     - name: set UCVM_INSTALL_PATH 
       run: echo "UCVM_INSTALL_PATH=$RUNNER_WORKSPACE/cvmsi/target" >> $GITHUB_ENV
-### build ucvm(basin) first 
+### build ucvm(main) first 
     - id: get-ucvm 
       uses: actions/checkout@v2
       with: 
         repository: 'SCECcode/UCVM'
-        ref: basin
+        ref: main
         path: ucvm
     - id: look-around
       run: ( echo " cvmsi-ucvm-ci:pwd =>";pwd;
@@ -80,12 +80,12 @@ jobs:
       run: echo "UCVM_SRC_PATH=$RUNNER_WORKSPACE/cvmsi/ucvm" >> $GITHUB_ENV
     - name: set UCVM_INSTALL_PATH 
       run: echo "UCVM_INSTALL_PATH=$RUNNER_WORKSPACE/cvmsi/target" >> $GITHUB_ENV
-### build ucvm(basin) first 
+### build ucvm(main) first 
     - id: get-ucvm 
       uses: actions/checkout@v2
       with: 
         repository: 'SCECcode/UCVM'
-        ref: basin
+        ref: main
         path: ucvm
     - id: build-ucvm
       uses: ./ucvm/.github/actions/build-ucvm-action
