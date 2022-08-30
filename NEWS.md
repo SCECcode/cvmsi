@@ -1,4 +1,4 @@
-CVM-S4.26 (April 2021):
+CVM-S4.26 (April 2021)
 
         Add forward function declaration for utm_geo_() and new LICENSE
 

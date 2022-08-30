@@ -1,9 +1,9 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(CVM-S Improved, 4.26, davidgil@usc.edu)
-AC_CONFIG_SRCDIR([src/cvmsi.h])
-AM_INIT_AUTOMAKE()
+AC_INIT(CVM-S Improved, 4.26)
+AC_CONFIG_SRCDIR([src])
+AM_INIT_AUTOMAKE([foreign no-exeext])
 AC_PROG_RANLIB
 
 # Checks for programs.
@@ -23,5 +23,5 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([memset pow sqrt strchr])
 
-AC_CONFIG_FILES([Makefile src/Makefile model/cvms/Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile data/cvms/Makefile test/Makefile])
 AC_OUTPUT
