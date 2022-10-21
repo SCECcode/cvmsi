@@ -34,17 +34,17 @@ double convertTo10P4(double data) {
  *			 Compares results to atest1.out.
  */
 int runTest(int num, float lon, float lat, float depth, char *moveOn, float moveTo, float increment, char *errStr) {
-	cvmsi_data_t data;	// Initialize the data struct
-	cvmsi_point_t pnt;	// Initialize the point struct
-	memset(&pnt, 0, sizeof(cvmsi_point_t));	// Set the memory for the point to be nothing for now.
-	memset(&data, 0, sizeof(cvmsi_data_t));	// Set the memory for the data to be nothing for now.
+	_cvmsi_data_t data;	// Initialize the data struct
+	_cvmsi_point_t pnt;	// Initialize the point struct
+	memset(&pnt, 0, sizeof(_cvmsi_point_t));	// Set the memory for the point to be nothing for now.
+	memset(&data, 0, sizeof(_cvmsi_data_t));	// Set the memory for the data to be nothing for now.
 	
 	int expectedX, expectedY, expectedZ;	// Expected X,Y,Z grid co-ordinates. 
 	double expectedVp, expectedVs, expectedRho, expectedDiffVp, expectedDiffVs;	// Expected material properties.
 	
 	// Read in the correct values file.
 	char readInFile[128];
-	sprintf(readInFile, "./data/atest%u.out", num);
+	sprintf(readInFile, "./ref/atest%u.out", num);
 	FILE *theFile = fopen(readInFile, "r");
 	
 	if (theFile == NULL) {
@@ -78,7 +78,24 @@ int runTest(int num, float lon, float lat, float depth, char *moveOn, float move
 			pnt.coord[2] = convertTo10P4(baseVal);
 		}
 
-		cvmsi_query(&pnt, &data, 1);
+                {
+	        cvmsi_properties_t mydata;	
+	        cvmsi_point_t mypnt;	
+	        memset(&mypnt, 0, sizeof(cvmsi_point_t));
+	        memset(&mydata, 0, sizeof(cvmsi_properties_t));	
+                mypnt.longitude=pnt.coord[0];
+                mypnt.latitude=pnt.coord[1];
+                mypnt.depth=pnt.coord[2];
+
+		cvmsi_query(&mypnt, &mydata, 1);
+
+		data.xyz.coord[0]=pnt.coord[0];
+		data.xyz.coord[1]=pnt.coord[1];
+		data.xyz.coord[2]=pnt.coord[2];
+		data.prop.vp=mydata.vp;
+		data.prop.vs=mydata.vs;
+		data.prop.rho=mydata.rho;
+                }
 		
 		fscanf(theFile, "%u %u %u %lf %lf %lf %lf %lf", &expectedX, &expectedY, &expectedZ, &expectedVp, 
 			   &expectedVs, &expectedRho, &expectedDiffVp, &expectedDiffVs);
@@ -136,7 +153,7 @@ int main(int argc, char **argv) {
 	char version[128];
 	char errStr[4096];
 	printf("\nStarting Acceptance Tests\n");
-	cvmsi_init("../model/i26");
+	cvmsi_init("../model/i26","cvmsi");
 	cvmsi_version(version, sizeof(version));
 	printf("Version ID: %s\nNumber of tests: 3\n\n", version);
 	

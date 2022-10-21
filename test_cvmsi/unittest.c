@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
 	char version[128];
 	char errStr[4096];
 	printf("\nStarting Unit Tests\n");
-	cvmsi_init("../model/i26");
+	cvmsi_init("../model/i26","cvmsi");
 	cvmsi_version(version, sizeof(version));
 	printf("Version ID: %s\nNumber of tests: 2\n\n", version);
 

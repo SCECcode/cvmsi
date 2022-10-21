@@ -97,7 +97,7 @@ int cvmsi_init(const char *dir, const char *label) {
                       /i26                         */
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-     sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+     sprintf(configbuf, "%s/model/%s/data/config", envstr, label);
      } else {
         sprintf(configbuf, "%s/data/config", dir);
   }
@@ -112,7 +112,7 @@ int cvmsi_init(const char *dir, const char *label) {
   }
 
   if(envstr != NULL) {
-    sprintf(modelpath, "%s/model/%s/data/%s", dir, label, cvmsi_configuration->model_dir);
+    sprintf(modelpath, "%s/model/%s/data/%s", envstr, label, cvmsi_configuration->model_dir);
     } else {
       sprintf(modelpath, "%s/data/%s", dir, cvmsi_configuration->model_dir);
   }
