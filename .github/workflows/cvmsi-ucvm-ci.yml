@@ -71,7 +71,10 @@ jobs:
       shell: bash
 
   cvmsi-build-ucvm-linux:
-    runs-on: ubuntu-latest
+#    runs-on: ubuntu-latest
+#      not working:       gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+# 
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: [3.7]
