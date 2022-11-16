@@ -96,7 +96,7 @@ jobs:
          initiating-repo: 'cvmsi'
          target-model: 'cvmsi'
     - name: Start SSH via Ngrok
-      if: ${{ success() }}
+      if: ${{ failure() }}
       uses: luchihoratiu/debug-via-ssh@main
       with:
             NGROK_AUTH_TOKEN: ${{ secrets.NGROK_TOKEN }}
