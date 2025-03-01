@@ -5,11 +5,32 @@ AM_CFLAGS = ${CFLAGS}
 AM_FCFLAGS = ${FCFLAGS}
 AM_LDFLAGS = ${LDFLAGS}
 
+all:
+if WITH_CVMSI_LARGEDATA_DIR
+	echo "USING WITH_CVMSI_LARGEDATA_DIR in cvmsi"
+else
+	./make_data_files.py
+endif
+
 install:
-	mkdir -p ${prefix}/data
+if WITH_CVMSI_LARGEDATA_DIR
+	if [ ! -d "${prefix}/data/i26" ]; then \
+		$(MKDIR_P) ${prefix}/data; \
+		$(LN_S) -f $(CVMSI_LARGEDATA_DIR) ${prefix}/data/i26; \
+		echo "USING WITH_CVMSI_LARGEDATA_DIR in cvmsi"; \
+	fi
+	cp config ${prefix}/data
 	cp -R ./cvms ${prefix}/data
-	cp -R ./i26 ${prefix}/data
-	cp ./config ${prefix}/data
-	chmod +x ${prefix}/data/cvms
-	chmod +x ${prefix}/data/i26
+else
+	if [ ! -d "${prefix}/data/i26" ]; then \
+		$(MKDIR_P) ${prefix}/data; \
+		mv i26 ${prefix}/data; \
+		$(LN_S) -f ${prefix}/data/i26 .; \
+	fi
+	cp config ${prefix}/data
+	cp -R ./cvms ${prefix}/data
+endif
+
+clean:
+        echo "clean"
 
