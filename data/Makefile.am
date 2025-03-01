@@ -20,17 +20,18 @@ if WITH_CVMSI_LARGEDATA_DIR
 		echo "USING WITH_CVMSI_LARGEDATA_DIR in cvmsi"; \
 	fi
 	cp config ${prefix}/data
-	cp -R ./cvms ${prefix}/data
+	cp -R cvms ${prefix}/data/cvms
 else
 	if [ ! -d "${prefix}/data/i26" ]; then \
 		$(MKDIR_P) ${prefix}/data; \
 		mv i26 ${prefix}/data; \
+		mv cvms ${prefix}/data; \
 		$(LN_S) -f ${prefix}/data/i26 .; \
 	fi
 	cp config ${prefix}/data
-	cp -R ./cvms ${prefix}/data
+	cp -R cvms ${prefix}/data/cvms
 endif
 
 clean:
-        echo "clean"
+	echo "clean"
 

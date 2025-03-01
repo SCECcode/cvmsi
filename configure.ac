@@ -9,7 +9,6 @@ AC_PROG_RANLIB
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_FC
-AC_PROG_LIBTOOL
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
 AC_PROG_RANLIB
@@ -23,11 +22,10 @@ AC_CHECK_LIB([m], [main])
 AC_CHECK_HEADERS([stdlib.h string.h])
 
 ##check optional large data path 
-##CVMSI_LARGETDATA_DIR=$CVM_LARGETDATA_DIR/model/cvmsi
 if test x"$CVM_LARGEDATA_DIR" != x; then
    # test directory existence
-   CVMSI_LARGEDATA_DIR=$CVM_LARGEDATA_DIR/model/cvmsi
-   AC_CHECK_FILE($CVM_LARGEDATA_DIR/model/cvmsi/box.dat, [], [AC_MSG_ERROR(["CVMSI data not found in cvmsi"])])
+   CVMSI_LARGEDATA_DIR=$CVM_LARGEDATA_DIR/model/cvmsi_i26
+   AC_CHECK_FILE($CVM_LARGEDATA_DIR/model/cvmsi_i26/box.dat, [], [AC_MSG_ERROR(["CVMSI data not found in cvmsi"])])
    AM_CONDITIONAL([WITH_CVMSI_LARGEDATA_DIR], true)
    AC_SUBST(CVMSI_LARGEDATA_DIR)
 else
