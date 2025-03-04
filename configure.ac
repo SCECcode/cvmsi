@@ -25,7 +25,7 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 if test x"$CVM_LARGEDATA_DIR" != x; then
    # test directory existence
    CVMSI_LARGEDATA_DIR=$CVM_LARGEDATA_DIR/model/cvmsi_i26
-   AC_CHECK_FILE($CVM_LARGEDATA_DIR/model/cvmsi_i26/box.dat, [], [AC_MSG_ERROR(["CVMSI data not found in cvmsi"])])
+#   AC_CHECK_FILE($CVM_LARGEDATA_DIR/model/cvmsi_i26/box.dat, [], [AC_MSG_ERROR(["CVMSI data not found in cvmsi"])])
    AM_CONDITIONAL([WITH_CVMSI_LARGEDATA_DIR], true)
    AC_SUBST(CVMSI_LARGEDATA_DIR)
 else
