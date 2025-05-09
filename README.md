@@ -4,7 +4,6 @@
 
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 ![GitHub repo size](https://img.shields.io/github/repo-size/sceccode/cvmsi)
-[![cvmsi-ci Actions Status](https://github.com/SCECcode/cvmsi/workflows/cvmsi-ci/badge.svg)](https://github.com/SCECcode/cvmsi/actions)
 [![cvmsi-ucvm-ci Actions Status](https://github.com/SCECcode/cvmsi/workflows/cvmsi-ucvm-ci/badge.svg)](https://github.com/SCECcode/cvmsi/actions)
 
 Tomography improved Southern California Velocity Model developed
@@ -41,7 +40,7 @@ To install this package on your computer, please run the following commands:
   cd data; ./make_data_files.py
   aclocal
   autoconf
-  automake
+  automake --add-missing --force-missing
   ./configure --prefix=/path/to/install
   make
   make install

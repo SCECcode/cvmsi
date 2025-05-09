@@ -8,12 +8,8 @@ if [ $tmp == 'Darwin' ]; then
   brew reinstall gcc
 fi
 
-cd data
-./make_data_files.py
-cd ..
-
 aclocal
-automake --add-missing
+automake --add-missing --force-missing
 autoconf
 ./configure --prefix=$UCVM_INSTALL_PATH/model/cvmsi
 make
