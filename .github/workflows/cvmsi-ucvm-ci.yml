@@ -2,7 +2,7 @@ name: cvmsi-ucvm-ci
 
 on:
   push:
-    branches: [ main ]
+    branches: [ foo ]
 
 jobs:
   cvmsi-build-ucvm-linux:
@@ -57,6 +57,8 @@ jobs:
       shell: bash
 
   cvmsi-build-ucvm-mac:
+    if: ${{ success() }}
+    needs: [cvmsi-build-ucvm-linux]
     runs-on: macos-latest
     strategy:
       matrix:
