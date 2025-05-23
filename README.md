@@ -37,7 +37,6 @@ to the model's authors, located in the AUTHORS file.
 To install this package on your computer, please run the following commands:
 
 <pre>
-  cd data; ./make_data_files.py
   aclocal
   autoconf
   automake --add-missing --force-missing
