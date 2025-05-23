@@ -2,7 +2,7 @@ name: cvmsi-ucvm-ci
 
 on:
   push:
-    branches: [ main ]
+    branches: [ foo ]
 
 jobs:
   cvmsi-build-ucvm-linux:
