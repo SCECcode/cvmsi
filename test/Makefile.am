@@ -29,13 +29,13 @@ unittest: unittest.o unittest_defs.o test_helper.o test_cvmsi_exec.o test_cvmsi_
 run_unit: unittest
 	./run_unit
 	
-accept_cvmsi: accept_cvmsi.o
+accept_cvmsi$(EXEEXT): accept_cvmsi.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)  
 
 accepttest: accepttest.o unittest_defs.o test_helper.o test_grid_exec.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)  
 
-unit_cvmsi: unit_cvmsi.o
+unit_cvmsi$(EXEEXT): unit_cvmsi.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)  
 
 run_accept: accepttest
