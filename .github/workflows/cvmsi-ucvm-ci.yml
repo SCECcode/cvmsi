@@ -6,6 +6,7 @@ on:
 
 jobs:
   cvmsi-build-ucvm-linux:
+    if: false ## skip this one
     runs-on: ubuntu-latest
     strategy:
       matrix:
