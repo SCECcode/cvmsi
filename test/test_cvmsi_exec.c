@@ -16,12 +16,6 @@
 #include "test_helper.h"
 #include "ucvm_model_dtypes.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-int isMacOS=true;
-#elif defined(unix) || defined(__unix__) || defined(__unix)
-int isMacOS=false;
-#endif
-
 int CVMSI_TESTS=5;
 
 int test_setup()
