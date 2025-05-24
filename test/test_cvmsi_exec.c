@@ -16,6 +16,12 @@
 #include "test_helper.h"
 #include "ucvm_model_dtypes.h"
 
+#if defined(__APPLE__) && defined(__MACH__)
+int isMacOS=true;
+#elif defined(unix) || defined(__unix__) || defined(__unix)
+int isMacOS=false;
+#endif
+
 int CVMSI_TESTS=5;
 
 int test_setup()
@@ -188,10 +194,12 @@ int test_query_points_by_elevation()
 
 // ge part
   sprintf(infile, "%s/%s", currentdir, "./inputs/test_latlons_ucvm_ge.txt");
-  sprintf(outfile, "%s/%s", currentdir,
-          "test_latlons_ucvm_ge.out");
-  sprintf(reffile, "%s/%s", currentdir,
-          "./ref/test_latlons_ucvm_ge.ref");
+  sprintf(outfile, "%s/%s", currentdir, "test_latlons_ucvm_ge.out");
+  if(isMacOS) {
+    sprintf(reffile, "%s/%s", currentdir, "./ref/test_latlons_ucvm_ge_macos.ref");
+    } else {
+      sprintf(reffile, "%s/%s", currentdir, "./ref/test_latlons_ucvm_ge.ref");
+  }
 
   if (test_assert_file_exist(infile) != 0) {
     printf("file:%s not found\n",infile);
