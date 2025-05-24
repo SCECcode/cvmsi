@@ -106,6 +106,12 @@ jobs:
     - name: test cvmsi with ucvm
       run: (cd $RUNNER_WORKSPACE/cvmsi/ucvm/work/model/cvmsi; source $UCVM_INSTALL_PATH/conf/ucvm_env.sh; ./.github/scripts/cvmsi-test-ucvm.sh)
       shell: bash
+    - name: Start SSH debug with tmate
+      uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true
+    - name: sleep to keep runner alive
+      run: sleep 3600
     - name: test cvmsi under ucvm
       run: (cd $RUNNER_WORKSPACE/cvmsi/ucvm; source $UCVM_INSTALL_PATH/conf/ucvm_env.sh; ./.github/scripts/ucvm-test.sh)
       shell: bash
