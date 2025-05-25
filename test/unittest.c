@@ -6,6 +6,13 @@
 #include "test_cvmsi_exec.h"
 #include "test_cvmsi_query_exec.h"
 
+#if defined(__APPLE__) && defined(__MACH__)
+int isMacOS=True;
+#else
+int isMacOS=False;
+#endif
+
+
 int main (int argc, char *argv[])
 {
   char *xmldir;

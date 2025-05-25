@@ -16,11 +16,7 @@
 #include "test_helper.h"
 #include "ucvm_model_dtypes.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-int isMacOS=True;
-#else
-int isMacOS=False;
-#endif
+extern int isMacOS;
 
 int CVMSI_TESTS=5;
 

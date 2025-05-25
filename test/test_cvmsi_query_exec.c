@@ -16,11 +16,7 @@
 #include "unittest_defs.h"
 #include "test_helper.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-int isMacOS=True;
-#else
-int isMacOS=False;
-#endif
+extern int isMacOS;
 
 int QUERY_TESTS=1;
 
