@@ -7,12 +7,6 @@
 #include "unittest_defs.h"
 #include "test_grid_exec.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-int isMacOS=True;
-#elif defined(unix) || defined(__unix__) || defined(__unix)
-int isMacOS=False;
-#endif
-
 int main (int argc, char *argv[])
 {
 
