@@ -16,6 +16,12 @@
 #include "unittest_defs.h"
 #include "test_helper.h"
 
+#if defined(__APPLE__) && defined(__MACH__)
+int isMacOS=True;
+#else
+int isMacOS=False;
+#endif
+
 int QUERY_TESTS=1;
 
 int test_cvmsi_query_points_gd()
@@ -33,7 +39,11 @@ int test_cvmsi_query_points_gd()
 // ge part
   sprintf(infile, "%s/%s", currentdir, "./inputs/test_latlons_gd.txt");
   sprintf(outfile, "%s/%s", currentdir, "test_latlons_gd.out");
-  sprintf(reffile, "%s/%s", currentdir, "./ref/test_latlons_gd.ref");
+  if(isMacOS) {
+    sprintf(reffile, "%s/%s", currentdir, "./ref/test_latlons_gd_macos.ref");
+    } else {
+      sprintf(reffile, "%s/%s", currentdir, "./ref/test_latlons_gd.ref");
+  } 
 
   if (test_assert_file_exist(infile) != 0) {
     printf("file:%s not found\n",infile);
