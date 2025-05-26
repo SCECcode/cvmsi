@@ -18,6 +18,8 @@
 
 int CVMSI_GRID_TESTS=1;
 
+extern int isMacOS;
+
 int test_cvmsi_grid_depth()
 {
   char infile[1280];
@@ -32,7 +34,13 @@ int test_cvmsi_grid_depth()
 
   sprintf(infile, "%s/%s", currentdir, "./inputs/test_latlons_gd.txt");
   sprintf(outfile, "%s/%s", currentdir, "test-cvmsi-grid-extract-depth.out");
-  sprintf(reffile, "%s/%s", currentdir, "./ref/test-cvmsi-grid-extract-depth.ref");
+
+  if(isMacOS) {
+    sprintf(reffile, "%s/%s", currentdir, "./ref/test-cvmsi-grid-extract-depth-macos.ref");
+    } else {
+      sprintf(reffile, "%s/%s", currentdir, "./ref/test-cvmsi-grid-extract-depth.ref");
+  }
+
 
   if (test_assert_int(runCVMSI(BIN_DIR, MODEL_DIR,infile, outfile,
                                         UCVM_COORD_GEO_DEPTH ), 0) != 0) {
