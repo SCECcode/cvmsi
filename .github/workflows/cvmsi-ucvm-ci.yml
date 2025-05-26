@@ -6,7 +6,7 @@ on:
 
 jobs:
   cvmsi-build-ucvm-linux:
-    if: ${{ failure() }}
+#   if: ${{ failure() }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -71,8 +71,8 @@ jobs:
 ## > 1372.415527 2628.551514 2279.880371
 ##
   cvmsi-build-ucvm-mac:
-#   if: ${{ success() }}
-#   needs: [cvmsi-build-ucvm-linux]
+    if: ${{ success() }}
+    needs: [cvmsi-build-ucvm-linux]
     runs-on: macos-latest
     strategy:
       matrix:
