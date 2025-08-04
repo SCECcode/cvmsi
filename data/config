@@ -7,5 +7,5 @@ cvms_dir = cvms
 
 # Model's download  directory,  cvmsi/i26, cvmsi/cvms
 model_download_dir = cvmsi
-model_download_data_path  = https://g-c662a6.a78b8.36fe.data.globus.org/ucvm/models
+model_download_data_path  = https://g-3a9041.a78b8.36fe.data.globus.org/ucvm/models
 
